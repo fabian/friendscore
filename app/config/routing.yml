@@ -1,0 +1,5 @@
+friend_score_instagram:
+    resource: "@FriendScoreInstagramBundle/Controller/"
+    type:     annotation
+    prefix:   /instagram
+
