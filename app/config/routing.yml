@@ -1,0 +1,5 @@
+friend_score_facebook:
+    resource: "@FriendScoreFacebookBundle/Controller/"
+    type:     annotation
+    prefix:   /facebook
+
