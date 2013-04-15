@@ -38,11 +38,14 @@ class DefaultController extends Controller
             
             // API call
             $request = $this->client->get('v1/users/self/feed');
-            $request->getQuery()->set('access_token', $accessToken);
+            $query = $request->getQuery();
+            $query->set('access_token', $accessToken);
+            $query->set('count', 30);
             $response = $request->send();
 
             $body = $response->getBody();
             var_dump(json_decode($body));
+            echo $body;
         }
 
         return array('client_id' => $this->clientId, 'redirect_uri' => $this->redirectUri);
