@@ -1,5 +1,5 @@
 {
-    "hash": "7dbb83c31496754c03f2bb4118747023",
+    "hash": "7f0088bf842980690e62deffe6542a25",
     "packages": [
         {
             "name": "doctrine/common",
@@ -944,6 +944,55 @@
             "time": "2012-12-21 11:40:51"
         },
         {
+            "name": "ruflin/elastica",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ruflin/Elastica.git",
+                "reference": "055bf87225c09198d798e3b937fc3255953d82a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/055bf87225c09198d798e3b937fc3255953d82a0",
+                "reference": "055bf87225c09198d798e3b937fc3255953d82a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "munkie/elasticsearch-thrift-php": "1.4.*",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "suggest": {
+                "munkie/elasticsearch-thrift-php": "Allow using thrift transport"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Elastica": "lib/",
+                    "Elastica\\Test": "test/lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Ruflin",
+                    "homepage": "http://ruflin.com/"
+                }
+            ],
+            "description": "Elasticsearch Client",
+            "homepage": "http://ruflin.github.com/Elastica/",
+            "keywords": [
+                "client",
+                "search"
+            ],
+            "time": "2013-04-12 17:48:46"
+        },
+        {
             "name": "sensio/distribution-bundle",
             "version": "v2.2.0",
             "target-dir": "Sensio/Bundle/DistributionBundle",
@@ -1512,9 +1561,9 @@
 
     ],
     "minimum-stability": "alpha",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "ruflin/elastica": 20
+    },
     "platform": {
         "php": ">=5.3.3"
     },
