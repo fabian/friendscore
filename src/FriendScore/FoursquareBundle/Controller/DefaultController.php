@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\DiExtraBundle\Annotation\Inject;
+use JMS\DiExtraBundle\Annotation\InjectParams;
 use Guzzle\Http\Client;
 
 class DefaultController extends Controller
@@ -18,13 +20,20 @@ class DefaultController extends Controller
 
     protected $redirectUri = 'http://localhost:8000/foursquare/callback';
 
+    protected $elastica;
     protected $client;
 
     protected $code = '';
     protected $accessToken = '';
 
-    public function __construct()
+    /**
+     * @InjectParams({
+     *     "elastica" = @Inject("friend_score_foursquare.elastica"),
+     * })
+     */
+    public function __construct($elastica)
     {
+        $this->elastica = $elastica;
         $this->client = new Client('https://api.foursquare.com');
     }
 
@@ -48,8 +57,8 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
-            var_dump(json_decode($body));
-            echo $body;
+            //var_dump(json_decode($body));
+            //echo $body;
 
             // API call
             $request = $this->client->get('v2/venues/4af57ab3f964a52054f921e3');
@@ -71,7 +80,39 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
-            var_dump(json_decode($body));
+            $json = json_decode($body);
+
+            $index = $this->elastica->getIndex('friendscore');
+            if (!$index->exists()) {
+                $index->create();
+            }
+
+            $type = $index->getType('foursquare');
+
+            $mapping = \Elastica\Type\Mapping::create(array(
+                'location' => array('type' => 'geo_point'),
+            ));
+            $type->setMapping($mapping);
+
+            foreach ($json->response->recent as $checkin) {
+
+                $venue = $checkin->venue;
+                $id = $venue->id;
+                $location = $venue->location;
+
+                $foursquare = array(
+                    'id' => $id,
+                    'name' => $venue->name,
+                    'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
+                    'url' => $venue->canonicalUrl
+                );
+
+                $document = new \Elastica\Document($id, $foursquare);
+
+                $type->addDocument($document);
+            }
+
+            var_dump($json);
             echo $body;
         }
 
