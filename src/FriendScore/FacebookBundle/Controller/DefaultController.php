@@ -26,14 +26,14 @@ class DefaultController extends Controller
     {
         $this->client = new Client('https://graph.facebook.com');
     }
-
+    
     /**
      * @Route("/")
      * @Template()
      */
     public function indexAction()
     {
-		$accessToken = 'BAAFDNZBZCxwzABAKh2DLgRPlEnC67OJyiFwFwUFhLVDSVTJA8D1ZCt3OjOKORJXTwXkGq6hEgHsZBsqImJjdVmggHbjc6jfsn8HXCcoXWp73KJiJIhY09C12RSAUyDsXgtlfw4rgo1Hbo37loddhOQxRjNt7lKMgifadYdBOsvczrAWefWoW';
+		$accessToken = 'AAAFDNZBZCxwzABAIYyXQCOzEh1IZCNcUEX8dajnPTecDglWVRgKuaFGcVyVwlCq44ETlJlvvnHDvypbEi2fg5FwZAZArHpWcRv8lkiZBccXgZDZD';
 
 		if(empty($accessToken)) {
 	    	$this->state = md5(uniqid(rand(), TRUE)); // CSRF protection	
@@ -41,8 +41,20 @@ class DefaultController extends Controller
 	   	
             
         // API call
+        //first call me to get the id of the user
         $request = $this->client->get('me');
         $request->getQuery()->set('access_token', $accessToken);
+        $response = $request->send();
+
+        $body = $response->getBody();
+        $jsonBody = json_decode($body);
+        
+        //get data of user
+        $request = $this->client->get($jsonBody->id);
+        $query = $request->getQuery();
+        $query->set('access_token', $accessToken);
+        $query->set('fields', 'id,name,friends.fields(first_name,last_name,checkins.fields(coordinates,place))');
+        
 	    $response = $request->send();
 
         $body = $response->getBody();
