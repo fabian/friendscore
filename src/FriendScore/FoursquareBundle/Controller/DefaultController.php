@@ -69,8 +69,8 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
-            var_dump(json_decode($body));
-            echo $body;
+            //var_dump(json_decode($body));
+            //echo $body;
 
             // API call
             $request = $this->client->get('v2/venues/4af57ab3f964a52054f921e3');
@@ -80,8 +80,8 @@ class DefaultController extends Controller
             $response = $request->send();
             
             $body = $response->getBody();
-            var_dump(json_decode($body));
-            echo $body;
+            //var_dump(json_decode($body));
+            //echo $body;
 
             // API call
             $request = $this->client->get('v2/checkins/recent');
@@ -93,6 +93,8 @@ class DefaultController extends Controller
 
             $body = $response->getBody();
             $json = json_decode($body);
+            //var_dump($json);
+            //echo $body;
 
             $index = $this->elastica->getIndex('friendscore');
             if (!$index->exists()) {
@@ -119,15 +121,13 @@ class DefaultController extends Controller
                 $location = $venue->location;
 
                 $foursquare = array(
-                    'user' => $userId,
                     'venue' => $venueId,
                     'name' => $venue->name,
                     'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
                     'url' => $venue->canonicalUrl
                 );
 
-                $id = $userId . '/' . $venueId;
-                $document = new \Elastica\Document($id, $foursquare);
+                $document = new \Elastica\Document($venueId, $foursquare);
 
                 $type->addDocument($document);
 
@@ -137,7 +137,8 @@ class DefaultController extends Controller
                 $size = '100x100';
 
                 $foursquareVisit = array(
-                    'user' => $visitId,
+                    'user' => $userId,
+                    'visit' => $visitId,
                     'first_name' => $visit->firstName,
                     'photo' => $photo->prefix . $size . $photo->suffix,
                 );
@@ -146,14 +147,25 @@ class DefaultController extends Controller
                     $foursquareVisit['last_name'] = $visit->lastName;
                 }
 
-                $document = new \Elastica\Document($id . '/' . $visitId, $foursquareVisit);
-                $document->setParent($id);
+                $document = new \Elastica\Document($userId . '/' . $visitId, $foursquareVisit);
+                $document->setParent($venueId);
 
                 $visitType->addDocument($document);
             }
 
-            var_dump($json);
-            echo $body;
+            $index->refresh();
+
+
+            // search
+            $query = new \Elastica\Query\Term(array('user' => $userId));
+
+            //Search on the index.
+            $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
+            //var_dump($resultSet->getResponse());
+
+            foreach ($resultSet->getResults() as $result) {
+                var_dump($result->getData());
+            }
         }
 
         return array('client_id' => $this->clientId, 'redirect_uri' => $this->redirectUri);
