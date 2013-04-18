@@ -44,8 +44,20 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $accessToken = 'L0SYAFHXQQ31QIC3EGQT4D2X11WJQMIDAIUO3WF2DI32XOQY';
+        $userId = '52185640';
 
         if ($accessToken) {
+
+            // API call
+            $request = $this->client->get('v2/users/241175');
+            $query = $request->getQuery();
+            $query->set('oauth_token', $accessToken);
+            $query->set('v', $this->version);
+            $response = $request->send();
+
+            $body = $response->getBody();
+            //var_dump(json_decode($body));
+            //echo $body;
 
             // API call
             $request = $this->client->get('v2/venues/explore');
@@ -57,8 +69,8 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
-            //var_dump(json_decode($body));
-            //echo $body;
+            var_dump(json_decode($body));
+            echo $body;
 
             // API call
             $request = $this->client->get('v2/venues/4af57ab3f964a52054f921e3');
@@ -87,29 +99,57 @@ class DefaultController extends Controller
                 $index->create();
             }
 
-            $type = $index->getType('foursquare');
+            $type = $index->getType('foursquare_place');
 
             $mapping = \Elastica\Type\Mapping::create(array(
                 'location' => array('type' => 'geo_point'),
             ));
             $type->setMapping($mapping);
 
+            $visitType = $index->getType('foursquare_visit');
+            
+            $mapping = new \Elastica\Type\Mapping();
+            $mapping->setParent('foursquare_place');
+            $visitType->setMapping($mapping);
+
             foreach ($json->response->recent as $checkin) {
 
                 $venue = $checkin->venue;
-                $id = $venue->id;
+                $venueId = $venue->id;
                 $location = $venue->location;
 
                 $foursquare = array(
-                    'id' => $id,
+                    'user' => $userId,
+                    'venue' => $venueId,
                     'name' => $venue->name,
                     'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
                     'url' => $venue->canonicalUrl
                 );
 
+                $id = $userId . '/' . $venueId;
                 $document = new \Elastica\Document($id, $foursquare);
 
                 $type->addDocument($document);
+
+                $visit = $checkin->user;
+                $visitId = $visit->id;
+                $photo = $visit->photo;
+                $size = '100x100';
+
+                $foursquareVisit = array(
+                    'user' => $visitId,
+                    'first_name' => $visit->firstName,
+                    'photo' => $photo->prefix . $size . $photo->suffix,
+                );
+
+                if (isset($visit->lastName)) {
+                    $foursquareVisit['last_name'] = $visit->lastName;
+                }
+
+                $document = new \Elastica\Document($id . '/' . $visitId, $foursquareVisit);
+                $document->setParent($id);
+
+                $visitType->addDocument($document);
             }
 
             var_dump($json);
