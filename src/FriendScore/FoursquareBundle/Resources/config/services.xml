@@ -6,10 +6,15 @@
 
     <parameters>
         <parameter key="friend_score_foursquare.elastica.class">Elastica\Client</parameter>
+        <parameter key="friend_score_foursquare.elastisearch.config" type="collection">
+            <parameter key="host">%elasticsearch_host%</parameter>
+            <parameter key="port">%elasticsearch_port%</parameter>
+        </parameter>
     </parameters>
 
     <services>
         <service id="friend_score_foursquare.elastica" class="%friend_score_foursquare.elastica.class%">
+             <argument>%friend_score_foursquare.elastisearch.config%</argument>
         </service>
     </services>
 </container>
