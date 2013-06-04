@@ -1,0 +1,38 @@
+web1: 
+    name: friendscore
+    cron:
+        - "0 0 * * *": "php app/console foursquare:crawl"
+    shared_writable_dirs:
+        - app/cache
+        - app/logs
+    document_root: web
+    default_gateway: app.php
+    index_list: [app.php]
+    php_extensions:
+        - intl
+        - mbstring
+        - xsl
+        - apc
+        - mysql
+        - pdo_mysql
+        - zip
+        - curl
+    php_session_autostart: Off
+    php_short_open_tag: Off
+    magic_quotes_gpc: Off
+    php_date_timezone: Europe/Zurich
+    after_build:
+        - "cp app/config/parameters.php.pagoda app/config/parameters.php"
+        - "curl -s http://getcomposer.org/installer | php -- --quiet; php composer.phar install --dev --prefer-source -n"
+        - "php app/console --env=prod --no-debug assetic:dump -n"
+    before_deploy:
+        - "php app/console --env=prod --no-debug cache:clear --no-warmup"
+        - "php app/console --env=prod --no-debug cache:warmup"
+        - "php app/console --env=prod --no-debug doctrine:migrations:migrate -n"
+
+db1:
+  name: lightning-db
+  type: mysql
+
+
+web1:
