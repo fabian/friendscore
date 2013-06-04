@@ -49,6 +49,17 @@ class DefaultController extends Controller
         if ($accessToken) {
 
             // API call
+            $request = $this->client->get('v2/users/self');
+            $query = $request->getQuery();
+            $query->set('oauth_token', $accessToken);
+            $query->set('v', $this->version);
+            $response = $request->send();
+
+            $body = $response->getBody();
+            var_dump(json_decode($body));
+            echo $body;
+
+            // API call
             $request = $this->client->get('v2/users/241175');
             $query = $request->getQuery();
             $query->set('oauth_token', $accessToken);
@@ -56,8 +67,8 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
-            //var_dump(json_decode($body));
-            //echo $body;
+            var_dump(json_decode($body));
+            echo $body;
 
             // API call
             $request = $this->client->get('v2/venues/explore');
