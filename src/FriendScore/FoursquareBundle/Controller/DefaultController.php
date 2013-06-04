@@ -11,6 +11,8 @@ use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 use Guzzle\Http\Client;
 
+use FriendScore\FoursquareBundle\Entity\User;
+
 class DefaultController extends Controller
 {
     protected $clientId = 'YDFCQSZDK1PEJFD4J4HGBSTS04OQZBPYCR1GPOVAXA3WTYGX';
@@ -20,6 +22,8 @@ class DefaultController extends Controller
 
     protected $redirectUri = 'http://localhost:8000/foursquare/callback';
 
+    protected $doctrine;
+    protected $security;
     protected $elastica;
     protected $client;
 
@@ -28,11 +32,15 @@ class DefaultController extends Controller
 
     /**
      * @InjectParams({
+     *     "doctrine" = @Inject("doctrine"),
+     *     "security" = @Inject("security.context"),
      *     "elastica" = @Inject("friend_score_foursquare.elastica"),
      * })
      */
-    public function __construct($elastica)
+    public function __construct($doctrine, $security, $elastica)
     {
+        $this->doctrine = $doctrine;
+        $this->security = $security;
         $this->elastica = $elastica;
         $this->client = new Client('https://api.foursquare.com');
     }
@@ -43,140 +51,21 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $accessToken = 'L0SYAFHXQQ31QIC3EGQT4D2X11WJQMIDAIUO3WF2DI32XOQY';
+        $index = $this->elastica->getIndex('friendscore');
+        if (!$index->exists()) {
+            $index->create();
+        }
+
+        // search
         $userId = '52185640';
+        $query = new \Elastica\Query\Term(array('user' => $userId));
 
-        if ($accessToken) {
+        //Search on the index.
+        $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
+        //var_dump($resultSet->getResponse());
 
-            // API call
-            $request = $this->client->get('v2/users/self');
-            $query = $request->getQuery();
-            $query->set('oauth_token', $accessToken);
-            $query->set('v', $this->version);
-            $response = $request->send();
-
-            $body = $response->getBody();
-            var_dump(json_decode($body));
-            echo $body;
-
-            // API call
-            $request = $this->client->get('v2/users/241175');
-            $query = $request->getQuery();
-            $query->set('oauth_token', $accessToken);
-            $query->set('v', $this->version);
-            $response = $request->send();
-
-            $body = $response->getBody();
-            var_dump(json_decode($body));
-            echo $body;
-
-            // API call
-            $request = $this->client->get('v2/venues/explore');
-            $query = $request->getQuery();
-            $query->set('oauth_token', $accessToken);
-            $query->set('v', $this->version);
-            $query->set('near', 'Baden, Switzerland');
-            $query->set('friendVisits', 'visited');
-            $response = $request->send();
-
-            $body = $response->getBody();
-            //var_dump(json_decode($body));
-            //echo $body;
-
-            // API call
-            $request = $this->client->get('v2/venues/4af57ab3f964a52054f921e3');
-            $query = $request->getQuery();
-            $query->set('oauth_token', $accessToken);
-            $query->set('v', $this->version);
-            $response = $request->send();
-            
-            $body = $response->getBody();
-            //var_dump(json_decode($body));
-            //echo $body;
-
-            // API call
-            $request = $this->client->get('v2/checkins/recent');
-            $query = $request->getQuery();
-            $query->set('oauth_token', $accessToken);
-            $query->set('v', $this->version);
-            $query->set('limit', 100);
-            $response = $request->send();
-
-            $body = $response->getBody();
-            $json = json_decode($body);
-            //var_dump($json);
-            //echo $body;
-
-            $index = $this->elastica->getIndex('friendscore');
-            if (!$index->exists()) {
-                $index->create();
-            }
-
-            $type = $index->getType('foursquare_place');
-
-            $mapping = \Elastica\Type\Mapping::create(array(
-                'location' => array('type' => 'geo_point'),
-            ));
-            $type->setMapping($mapping);
-
-            $visitType = $index->getType('foursquare_visit');
-            
-            $mapping = new \Elastica\Type\Mapping();
-            $mapping->setParam('_parent', array('type' => 'foursquare_place'));
-            $visitType->setMapping($mapping);
-
-            foreach ($json->response->recent as $checkin) {
-
-                $venue = $checkin->venue;
-                $venueId = $venue->id;
-                $location = $venue->location;
-
-                $foursquare = array(
-                    'venue' => $venueId,
-                    'name' => $venue->name,
-                    'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
-                    'url' => $venue->canonicalUrl
-                );
-
-                $document = new \Elastica\Document($venueId, $foursquare);
-
-                $type->addDocument($document);
-
-                $visit = $checkin->user;
-                $visitId = $visit->id;
-                $photo = $visit->photo;
-                $size = '100x100';
-
-                $foursquareVisit = array(
-                    'user' => $userId,
-                    'visit' => $visitId,
-                    'first_name' => $visit->firstName,
-                    'photo' => $photo->prefix . $size . $photo->suffix,
-                );
-
-                if (isset($visit->lastName)) {
-                    $foursquareVisit['last_name'] = $visit->lastName;
-                }
-
-                $document = new \Elastica\Document($userId . '/' . $visitId, $foursquareVisit);
-                $document->setParent($venueId);
-
-                $visitType->addDocument($document);
-            }
-
-            $index->refresh();
-
-
-            // search
-            $query = new \Elastica\Query\Term(array('user' => $userId));
-
-            //Search on the index.
-            $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
-            //var_dump($resultSet->getResponse());
-
-            foreach ($resultSet->getResults() as $result) {
-                var_dump($result->getData());
-            }
+        foreach ($resultSet->getResults() as $result) {
+            var_dump($result->getData());
         }
 
         return array('client_id' => $this->clientId, 'redirect_uri' => $this->redirectUri);
@@ -200,6 +89,28 @@ class DefaultController extends Controller
         $response = $request->send();
 
         $body = $response->getBody();
+        $json = json_decode($body);
+        
+        $accessToken = $json->access_token;
+
+        $request = $this->client->get('v2/users/self');
+        $query = $request->getQuery();
+        $query->set('oauth_token', $accessToken);
+        $query->set('v', $this->version);
+        $response = $request->send();
+
+        $body = $response->getBody();
+        $json = json_decode($body);
+
+        $foursquareId = $json->response->user->id;
+
+        $user = new User($this->security->getToken()->getUser());
+        $user->setFoursquareId($foursquareId);
+        $user->setAccessToken($accessToken);
+
+        $em = $this->doctrine->getManager();
+        $em->persist($user);
+        $em->flush();
 
         return new Response($body);
     }
