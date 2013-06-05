@@ -31,8 +31,5 @@ web1:
         - "php app/console --env=prod --no-debug doctrine:migrations:migrate -n"
 
 db1:
-  name: lightning-db
+  name: friendscore-db
   type: mysql
-
-
-web1:
