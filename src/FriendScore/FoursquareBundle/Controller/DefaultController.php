@@ -32,7 +32,7 @@ class DefaultController extends Controller
      *     "doctrine" = @Inject("doctrine"),
      *     "security" = @Inject("security.context"),
      *     "router" = @Inject("router"),
-     *     "elastica" = @Inject("friend_score_foursquare.elastica"),
+     *     "elastica" = @Inject("friend_score.foursquare_bundle.elastica"),
      *     "foursquare" = @Inject("friend_score.foursquare_bundle.service.foursquare"),
      *     "foursquareAuth" = @Inject("friend_score.foursquare_bundle.service.foursquare_auth"),
      * })

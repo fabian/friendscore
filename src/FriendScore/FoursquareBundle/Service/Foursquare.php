@@ -23,9 +23,9 @@ class Foursquare
 
     /**
      * @InjectParams({
-     *     "client" = @Inject("friend_score_foursquare.foursquare.client"),
-     *     "clientId" = @Inject("%friend_score_foursquare.foursquare.client_id%"),
-     *     "clientSecret" = @Inject("%friend_score_foursquare.foursquare.client_secret%"),
+     *     "client" = @Inject("friend_score.foursquare_bundle.foursquare.client"),
+     *     "clientId" = @Inject("%friend_score.foursquare_bundle.client_id%"),
+     *     "clientSecret" = @Inject("%friend_score.foursquare_bundle.client_secret%"),
      * })
      */
     public function __construct($client, $clientId, $clientSecret)
