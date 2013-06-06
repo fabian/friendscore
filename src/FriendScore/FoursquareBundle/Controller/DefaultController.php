@@ -15,18 +15,14 @@ use FriendScore\FoursquareBundle\Entity\User;
 
 class DefaultController extends Controller
 {
-    protected $clientId = 'YDFCQSZDK1PEJFD4J4HGBSTS04OQZBPYCR1GPOVAXA3WTYGX';
-    protected $clientSecret = 'M33CTMOOFY0CO1JKDGXJZKITVGQFPFEQLLDJIJ4J4UETRY4F';
-
-    protected $version = '20130415';
-
     protected $redirectUri;
 
     protected $doctrine;
     protected $security;
     protected $router;
     protected $elastica;
-    protected $client;
+    protected $foursquare;
+    protected $foursquareAuth;
 
     protected $code = '';
     protected $accessToken = '';
@@ -37,18 +33,20 @@ class DefaultController extends Controller
      *     "security" = @Inject("security.context"),
      *     "router" = @Inject("router"),
      *     "elastica" = @Inject("friend_score_foursquare.elastica"),
+     *     "foursquare" = @Inject("friend_score.foursquare_bundle.service.foursquare"),
+     *     "foursquareAuth" = @Inject("friend_score.foursquare_bundle.service.foursquare_auth"),
      * })
      */
-    public function __construct($doctrine, $security, $router, $elastica)
+    public function __construct($doctrine, $security, $router, $elastica, $foursquare, $foursquareAuth)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
         $this->router = $router;
         $this->elastica = $elastica;
+        $this->foursquare = $foursquare;
+        $this->foursquareAuth = $foursquareAuth;
 
         $this->redirectUri = $this->router->generate('friendscore_foursquare_default_callback', array(), true);
-
-        $this->client = new Client('https://api.foursquare.com');
     }
 
     /**
@@ -74,7 +72,7 @@ class DefaultController extends Controller
             var_dump($result->getData());
         }
 
-        return array('client_id' => $this->clientId, 'redirect_uri' => $this->redirectUri);
+        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri);
     }
 
     /**
@@ -84,31 +82,11 @@ class DefaultController extends Controller
     {
         $code = $request->get('code');
 
-        $client = new Client('https://foursquare.com');
-        $request = $client->post('oauth2/access_token', null, array (
-            'client_id' => $this->clientId,
-            'client_secret' => $this->clientSecret,
-            'grant_type' => 'authorization_code',
-            'redirect_uri' => $this->redirectUri,
-            'code' => $code,
-        ));
-        $response = $request->send();
+        $accessToken = $this->foursquareAuth->generateAccessToken($code, $this->redirectUri);
 
-        $body = $response->getBody();
-        $json = json_decode($body);
-        
-        $accessToken = $json->access_token;
-
-        $request = $this->client->get('v2/users/self');
-        $query = $request->getQuery();
-        $query->set('oauth_token', $accessToken);
-        $query->set('v', $this->version);
-        $response = $request->send();
-
-        $body = $response->getBody();
-        $json = json_decode($body);
-
-        $foursquareId = $json->response->user->id;
+        $this->foursquare->setAccessToken($accessToken);
+        $foursquareUser = $this->foursquare->getCurrentUser();
+        $foursquareId = $foursquareUser->id;
 
         $user = new User($this->security->getToken()->getUser());
         $user->setFoursquareId($foursquareId);
@@ -118,6 +96,6 @@ class DefaultController extends Controller
         $em->persist($user);
         $em->flush();
 
-        return new Response($body);
+        return new Response(json_encode($foursquareUser));
     }
 }

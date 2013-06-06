@@ -10,11 +10,20 @@
             <parameter key="host">%elasticsearch_host%</parameter>
             <parameter key="port">%elasticsearch_port%</parameter>
         </parameter>
+        <parameter key="friend_score_foursquare.foursquare.client.class">Guzzle\Http\Client</parameter>
+        <parameter key="friend_score_foursquare.foursquare.client_id">YDFCQSZDK1PEJFD4J4HGBSTS04OQZBPYCR1GPOVAXA3WTYGX</parameter>
+        <parameter key="friend_score_foursquare.foursquare.client_secret">M33CTMOOFY0CO1JKDGXJZKITVGQFPFEQLLDJIJ4J4UETRY4F</parameter>
     </parameters>
 
     <services>
         <service id="friend_score_foursquare.elastica" class="%friend_score_foursquare.elastica.class%">
              <argument>%friend_score_foursquare.elastisearch.config%</argument>
+        </service>
+        <service id="friend_score_foursquare.foursquare.client" class="%friend_score_foursquare.foursquare.client.class%">
+             <argument>https://api.foursquare.com</argument>
+        </service>
+        <service id="friend_score_foursquare.foursquare_auth.client" class="%friend_score_foursquare.foursquare.client.class%">
+             <argument>https://foursquare.com</argument>
         </service>
     </services>
 </container>
