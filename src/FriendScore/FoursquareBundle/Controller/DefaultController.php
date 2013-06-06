@@ -88,7 +88,18 @@ class DefaultController extends Controller
         $foursquareUser = $this->foursquare->getCurrentUser();
         $foursquareId = $foursquareUser->id;
 
-        $user = new User($this->security->getToken()->getUser());
+        $currentUser = $this->security->getToken()->getUser();
+
+        $user = $this->doctrine
+            ->getRepository('FriendScoreFoursquareBundle:User')
+            ->findOneBy(
+                array('user' => $currentUser)
+            );
+
+        if (!$user) {
+            $user = new User($currentUser);
+        }
+
         $user->setFoursquareId($foursquareId);
         $user->setAccessToken($accessToken);
 
