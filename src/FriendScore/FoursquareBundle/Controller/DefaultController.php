@@ -13,7 +13,7 @@ use Guzzle\Http\Client;
 
 use FriendScore\FoursquareBundle\Entity\User;
 
-class DefaultController extends Controller
+class DefaultController
 {
     protected $redirectUri;
 
@@ -49,6 +49,19 @@ class DefaultController extends Controller
         $this->redirectUri = $this->router->generate('friendscore_foursquare_default_callback', array(), true);
     }
 
+    protected function getUser()
+    {
+        $currentUser = $this->security->getToken()->getUser();
+
+        $user = $this->doctrine
+            ->getRepository('FriendScoreFoursquareBundle:User')
+            ->findOneBy(
+                array('user' => $currentUser)
+            );
+
+        return $user;
+    }
+
     /**
      * @Route("/")
      * @Template()
@@ -61,15 +74,19 @@ class DefaultController extends Controller
         }
 
         // search
-        $userId = '52185640';
-        $query = new \Elastica\Query\Term(array('user' => $userId));
+        $user = $this->getUser();
+        if ($user) {
 
-        //Search on the index.
-        $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
-        //var_dump($resultSet->getResponse());
+            $userId = $user->getFoursquareId();
+            $query = new \Elastica\Query\Term(array('user' => $userId));
 
-        foreach ($resultSet->getResults() as $result) {
-            var_dump($result->getData());
+            //Search on the index.
+            $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
+            //var_dump($resultSet->getResponse());
+
+            foreach ($resultSet->getResults() as $result) {
+                var_dump($result->getData());
+            }
         }
 
         return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri);
@@ -88,16 +105,10 @@ class DefaultController extends Controller
         $foursquareUser = $this->foursquare->getCurrentUser();
         $foursquareId = $foursquareUser->id;
 
-        $currentUser = $this->security->getToken()->getUser();
-
-        $user = $this->doctrine
-            ->getRepository('FriendScoreFoursquareBundle:User')
-            ->findOneBy(
-                array('user' => $currentUser)
-            );
+        $user = $this->getUser();
 
         if (!$user) {
-            $user = new User($currentUser);
+            $user = new User($this->security->getToken()->getUser());
         }
 
         $user->setFoursquareId($foursquareId);
