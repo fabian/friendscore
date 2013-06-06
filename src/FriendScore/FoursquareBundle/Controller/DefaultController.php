@@ -20,10 +20,11 @@ class DefaultController extends Controller
 
     protected $version = '20130415';
 
-    protected $redirectUri = 'http://localhost:8000/foursquare/callback';
+    protected $redirectUri;
 
     protected $doctrine;
     protected $security;
+    protected $router;
     protected $elastica;
     protected $client;
 
@@ -34,14 +35,19 @@ class DefaultController extends Controller
      * @InjectParams({
      *     "doctrine" = @Inject("doctrine"),
      *     "security" = @Inject("security.context"),
+     *     "router" = @Inject("router"),
      *     "elastica" = @Inject("friend_score_foursquare.elastica"),
      * })
      */
-    public function __construct($doctrine, $security, $elastica)
+    public function __construct($doctrine, $security, $router, $elastica)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
+        $this->router = $router;
         $this->elastica = $elastica;
+
+        $this->redirectUri = $this->router->generate('friendscore_foursquare_default_callback', array(), true);
+
         $this->client = new Client('https://api.foursquare.com');
     }
 
