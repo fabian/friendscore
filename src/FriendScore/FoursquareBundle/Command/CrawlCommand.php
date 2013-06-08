@@ -28,7 +28,7 @@ class CrawlCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $this->doctrine = $container->get('doctrine');
-        $this->elastica = $container->get('friend_score_foursquare.elastica');
+        $this->elastica = $container->get('friend_score.foursquare_bundle.elastica');
         $this->client = new \Guzzle\Http\Client('https://api.foursquare.com');
 
         $users = $this->doctrine
