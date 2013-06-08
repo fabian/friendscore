@@ -19,6 +19,7 @@ class User
 
     /**
      * @ORM\ManyToOne(targetEntity="FriendScore\UserBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
