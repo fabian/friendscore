@@ -16,5 +16,5 @@ $container->setParameter('mailer_password', null);
 $container->setParameter('locale', 'en');
 $container->setParameter('secret', 'd374ac3307aa6c27dfbec09d196945c4');
 
-$container->setParameter('elasticsearch_host', 'nlypceit.api.qbox.io');
-$container->setParameter('elasticsearch_port', '80');
+$container->setParameter('elasticsearch_host', 'localhost');
+$container->setParameter('elasticsearch_port', '9200');
