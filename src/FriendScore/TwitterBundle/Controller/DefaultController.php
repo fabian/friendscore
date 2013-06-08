@@ -54,8 +54,21 @@ class DefaultController extends Controller
             $response = $request->send();
 
             $body = $response->getBody();
+            $jsonResponse = json_decode($body);
+            
+            echo $jsonResponse->ids[56];
+            
+            // API call
+            $request = $this->client->get('/1.1/statuses/user_timeline.json');
+            $query = $request->getQuery();
+            $query->set('cursor', '-1');
+            $query->set('user_id', $jsonResponse->ids[56]);
+            $query->set('count', '5000');
+
+            $response = $request->send();
+
+            $body = $response->getBody();
             var_dump(json_decode($body));
-            echo $body;
             
     		return array('oauth_token' => '');
 		} else {
