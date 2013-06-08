@@ -13,6 +13,9 @@ use Guzzle\Http\Client;
 
 use FriendScore\FoursquareBundle\Entity\User;
 
+/**
+ * Foursquare Controller
+ */
 class DefaultController
 {
     protected $redirectUri;
