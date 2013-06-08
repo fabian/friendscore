@@ -23,6 +23,8 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new FriendScore\UserBundle\FriendScoreUserBundle(),
             new FriendScore\FoursquareBundle\FriendScoreFoursquareBundle(),
+            new FriendScore\FacebookBundle\FriendScoreFacebookBundle(),
+            new FriendScore\TwitterBundle\FriendScoreTwitterBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
