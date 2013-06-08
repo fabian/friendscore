@@ -1,3 +1,8 @@
+friend_score_web:
+    resource: "@FriendScoreWebBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 friend_score_user:
     resource: "@FriendScoreUserBundle/Controller/"
     type:     annotation
