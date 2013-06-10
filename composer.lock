@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "80effa8014f64ae54a8a4463493195e2",
+    "hash": "7a53483e3fd645cb50dcd7e81c01ed39",
     "packages": [
         {
             "name": "doctrine/common",
@@ -1129,12 +1129,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ruflin/Elastica.git",
-                "reference": "055bf87225c09198d798e3b937fc3255953d82a0"
+                "reference": "b150b83107778a51f81f2bf610fff0c2cc6f459e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/055bf87225c09198d798e3b937fc3255953d82a0",
-                "reference": "055bf87225c09198d798e3b937fc3255953d82a0",
+                "url": "https://api.github.com/repos/ruflin/Elastica/zipball/b150b83107778a51f81f2bf610fff0c2cc6f459e",
+                "reference": "b150b83107778a51f81f2bf610fff0c2cc6f459e",
                 "shasum": ""
             },
             "require": {
@@ -1142,12 +1142,19 @@
             },
             "require-dev": {
                 "munkie/elasticsearch-thrift-php": "1.4.*",
-                "phpunit/phpunit": "3.7.*"
+                "psr/log": ">=1.0,<2.0"
             },
             "suggest": {
-                "munkie/elasticsearch-thrift-php": "Allow using thrift transport"
+                "monolog/monolog": "Logging request",
+                "munkie/elasticsearch-thrift-php": "Allow using thrift transport",
+                "psr/log": "for logging"
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.20.5.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Elastica": "lib/",
@@ -1170,7 +1177,7 @@
                 "client",
                 "search"
             ],
-            "time": "2013-04-12 17:48:46"
+            "time": "2013-06-07 19:13:54"
         },
         {
             "name": "sensio/distribution-bundle",
