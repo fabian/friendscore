@@ -118,7 +118,7 @@ class CrawlCommand extends ContainerAwareCommand
                 $visitType = $index->getType('foursquare_visit');
                 
                 $mapping = new \Elastica\Type\Mapping();
-                $mapping->setParam('_parent', array('type' => 'foursquare_place'));
+                $mapping->setParent('foursquare_place');
                 $visitType->setMapping($mapping);
     
                 foreach ($json->response->recent as $checkin) {
