@@ -40,6 +40,8 @@ class CrawlCommand extends ContainerAwareCommand
             $accessToken = $user->getAccessToken();
             $userId = $user->getFoursquareId();
 
+            $output->writeln("Crawling for User ID $userId");
+
             if ($accessToken) {
 
                 // API call
@@ -156,6 +158,8 @@ class CrawlCommand extends ContainerAwareCommand
                     $document->setParent($venueId);
     
                     $visitType->addDocument($document);
+
+                    $output->writeln("Added Check-In from {$visit->firstName} to {$venue->name}");
                 }
             }
         }
