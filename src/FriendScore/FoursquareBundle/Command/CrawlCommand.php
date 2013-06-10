@@ -40,6 +40,8 @@ class CrawlCommand extends ContainerAwareCommand
             $accessToken = $user->getAccessToken();
             $userId = $user->getFoursquareId();
 
+            $output->writeln("Crawling for User ID $userId");
+
             if ($accessToken) {
 
                 // API call
@@ -116,7 +118,7 @@ class CrawlCommand extends ContainerAwareCommand
                 $visitType = $index->getType('foursquare_visit');
                 
                 $mapping = new \Elastica\Type\Mapping();
-                $mapping->setParam('_parent', array('type' => 'foursquare_place'));
+                $mapping->setParent('foursquare_place');
                 $visitType->setMapping($mapping);
     
                 foreach ($json->response->recent as $checkin) {
@@ -156,6 +158,8 @@ class CrawlCommand extends ContainerAwareCommand
                     $document->setParent($venueId);
     
                     $visitType->addDocument($document);
+
+                    $output->writeln("Added Check-In from {$visit->firstName} to {$venue->name}");
                 }
             }
         }

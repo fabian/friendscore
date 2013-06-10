@@ -13,6 +13,9 @@ use Guzzle\Http\Client;
 
 use FriendScore\FoursquareBundle\Entity\User;
 
+/**
+ * Foursquare Controller
+ */
 class DefaultController
 {
     protected $redirectUri;
@@ -84,12 +87,13 @@ class DefaultController
             $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
             //var_dump($resultSet->getResponse());
 
+            $places = array();
             foreach ($resultSet->getResults() as $result) {
-                var_dump($result->getData());
+                $places[] = $result->getData();
             }
         }
 
-        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri);
+        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri, 'places' => $places);
     }
 
     /**

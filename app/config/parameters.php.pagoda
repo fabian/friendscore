@@ -16,5 +16,6 @@ $container->setParameter('mailer_password', null);
 $container->setParameter('locale', 'en');
 $container->setParameter('secret', isset($_SERVER["FRAMEWORK_SECRET"]) ? $_SERVER["FRAMEWORK_SECRET"] : 'dca972fcbefa6f2822e67f0a12d29102');
 
-$container->setParameter('elasticsearch_host', 'nlypceit.api.qbox.io');
+$container->setParameter('elasticsearch_host', 'api.searchbox.io');
 $container->setParameter('elasticsearch_port', '80');
+$container->setParameter('elasticsearch_path', 'api-key/8a672f13b27cb103208063ad32261aa2/');

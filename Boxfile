@@ -21,6 +21,10 @@ web1:
     php_short_open_tag: Off
     magic_quotes_gpc: Off
     php_date_timezone: Europe/Zurich
+    apache_access_log: true
+    apache_error_log: true
+    php_error_log: true
+    php_fpm_log: true
     after_build:
         - "cp app/config/parameters.php.pagoda app/config/parameters.php"
         - "php composer.phar install --prefer-source -n"

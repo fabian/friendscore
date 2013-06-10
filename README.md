@@ -16,6 +16,14 @@ php app/console doctrine:database:create
 php app/console doctrine:migrations:migrate
 ```
 
+## Elasticsearch
+
+Download the latest version from http://www.elasticsearch.org/download/ and run it with:
+
+```
+bin/elasticsearch -f
+```
+
 ## Development
 
 Run the server and open http://localhost:8000/ in your browser:

@@ -9,6 +9,7 @@
         <parameter key="friend_score.foursquare_bundle.elastisearch.config" type="collection">
             <parameter key="host">%elasticsearch_host%</parameter>
             <parameter key="port">%elasticsearch_port%</parameter>
+            <parameter key="path">%elasticsearch_path%</parameter>
         </parameter>
         <parameter key="friend_score.foursquare_bundle.client.class">Guzzle\Http\Client</parameter>
         <parameter key="friend_score.foursquare_bundle.client_id">YDFCQSZDK1PEJFD4J4HGBSTS04OQZBPYCR1GPOVAXA3WTYGX</parameter>
