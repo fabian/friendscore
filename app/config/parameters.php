@@ -18,3 +18,4 @@ $container->setParameter('secret', 'd374ac3307aa6c27dfbec09d196945c4');
 
 $container->setParameter('elasticsearch_host', 'localhost');
 $container->setParameter('elasticsearch_port', '9200');
+$container->setParameter('elasticsearch_path', '');
