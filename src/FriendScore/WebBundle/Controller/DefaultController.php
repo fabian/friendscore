@@ -8,6 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 
+/**
+ * Web Controller
+ */
 class DefaultController extends Controller
 {
     protected $doctrine;
