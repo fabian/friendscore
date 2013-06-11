@@ -71,4 +71,4 @@ fos_user:
 
 jms_di_extra:
     locations:
-        bundles: [ FriendScoreFoursquareBundle ]
+        bundles: [ FriendScoreWebBundle, FriendScoreFoursquareBundle ]

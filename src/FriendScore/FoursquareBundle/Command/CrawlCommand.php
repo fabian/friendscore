@@ -37,10 +37,11 @@ class CrawlCommand extends ContainerAwareCommand
 
         foreach ($users as $user) {
 
+            $userId = $user->getUser()->getId();
             $accessToken = $user->getAccessToken();
-            $userId = $user->getFoursquareId();
+            $foursquareId = $user->getFoursquareId();
 
-            $output->writeln("Crawling for User ID $userId");
+            $output->writeln("Crawling for User ID $userId and Foursquare ID $foursquareId");
 
             if ($accessToken) {
 
@@ -164,7 +165,7 @@ class CrawlCommand extends ContainerAwareCommand
                         $foursquareVisit['last_name'] = $visitor->lastName;
                     }
     
-                    $document = new \Elastica\Document($userId . '_foursquare_' . $visitorId, $foursquareVisit);
+                    $document = new \Elastica\Document($foursquareId . '_foursquare_' . $visitorId, $foursquareVisit);
                     $document->setParent($placeId);
     
                     $visitType->addDocument($document);

@@ -1,102 +1,10 @@
 <html>
-<head>
-<link href="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css" rel="stylesheet" />
-<!--[if lte IE 8]>
-<link href="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.ie.css" rel="stylesheet" />
-<![endif]-->
-<script src="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.js"></script>
-<style>
-body {
-    margin: 0;
-    padding: 0;
-    font-family: Helvetica, Arial, sans-serif;
-}
-
-#map {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    z-index: 1;
-}
-
-.container {
-    position: absolute;
-    top: 5%;
-    right: 5%;
-    padding: 10px 20px;
-    width: 20%;
-    z-index: 2;
-    background-color: #fff;
-}
-</style>
-</head>
+<head></head>
 <body>
 
-<div class="container">
 <h2>Foursquare</h2>
 
 <p><a href="https://foursquare.com/oauth2/authenticate?client_id={{ client_id }}&amp;redirect_uri={{ redirect_uri }}&amp;response_type=code">Authorize</a></p>
-
-<h2>Recent visits</h2>
-
-<ul>
-    {% for visit in visits %}
-        <li>
-            {{ visit.first_name }}
-            checked in to
-            <a href="#{{ visit.place_id }}">{{ visit.place_name }}</a>
-            <br />
-            <small>{{ visit.last_checkin|date("F jS \\a\\t g:ia") }}</small>
-        </li>
-    {% endfor %}
-</ul>
-
-<h2>Recommended places</h2>
-
-<ul>
-    {% for place in places %}
-        <li><a href="{{ place.url }}">{{ place.name }}</a></li>
-    {% endfor %}
-</ul>
-</div>
-
-<div id="map"></div>
-
-<script>
-
-var map = L.mapbox.map('map', 'equivalence.map-ju0tzt0i');
-map.setView([47.37842966928331, 8.5350089935687], 14);
-
-var geoJson = {
-    type: 'FeatureCollection',
-    features: []
-};
-
-{% for place in places %}
-geoJson.features.push({
-    // this feature is in the GeoJSON format: see geojson.org
-    // for the full specification
-    type: 'Feature',
-    geometry: {
-        type: 'Point',
-        // coordinates here are in longitude, latitude order because
-        // x, y is the standard for GeoJSON and many formats
-        coordinates: [{{ place.location.lon }}, {{ place.location.lat }}]
-    },
-    properties: {
-        title: '{{ place.name }}',
-        //description: 'Just one of me',
-        // one can customize markers by adding simplestyle properties
-        // http://mapbox.com/developers/simplestyle/
-        'marker-color': '#f77d10'
-    }
-});
-{% endfor %}
-
-map.markerLayer.setGeoJSON(geoJson);
-
-</script>
 
 </body>
 </html>
