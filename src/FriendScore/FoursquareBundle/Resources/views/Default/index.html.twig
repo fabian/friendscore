@@ -38,6 +38,20 @@ body {
 
 <p><a href="https://foursquare.com/oauth2/authenticate?client_id={{ client_id }}&amp;redirect_uri={{ redirect_uri }}&amp;response_type=code">Authorize</a></p>
 
+<h2>Recent visits</h2>
+
+<ul>
+    {% for visit in visits %}
+        <li>
+            {{ visit.first_name }}
+            checked in to
+            <a href="#{{ visit.place_id }}">{{ visit.place_name }}</a>
+            <br />
+            <small>{{ visit.last_checkin|date("F jS \\a\\t g:ia") }}</small>
+        </li>
+    {% endfor %}
+</ul>
+
 <h2>Recommended places</h2>
 
 <ul>

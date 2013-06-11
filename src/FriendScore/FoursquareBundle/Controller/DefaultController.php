@@ -76,24 +76,42 @@ class DefaultController
             $index->create();
         }
 
+        $places = array();
+        $visits = array();
+
         // search
         $user = $this->getUser();
         if ($user) {
 
             $userId = $user->getFoursquareId();
-            $query = new \Elastica\Query\Term(array('user' => $userId));
+            $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
 
             //Search on the index.
-            $resultSet = $index->search(new \Elastica\Query\HasChild($query, 'foursquare_visit'));
+            $hasChildQuery = new \Elastica\Query\HasChild($userQuery, 'visit');
+            $query = new \Elastica\Query();
+            $query->setQuery($hasChildQuery);
+            $query->setSize(3);
+            $resultSet = $index->search($query);
             //var_dump($resultSet->getResponse());
 
-            $places = array();
             foreach ($resultSet->getResults() as $result) {
                 $places[] = $result->getData();
             }
+
+            //Search visits
+            $query = new \Elastica\Query();
+            $query->setQuery($userQuery);
+            $query->setSort(array('last_checkin' => 'desc'));
+            $query->setSize(3);
+            $resultSet = $index->getType('visit')->search($query);
+            //var_dump($resultSet->getResponse());exit;
+
+            foreach ($resultSet->getResults() as $result) {
+                $visits[] = $result->getData();
+            }
         }
 
-        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri, 'places' => $places);
+        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri, 'places' => $places, 'visits' => $visits);
     }
 
     /**

@@ -107,59 +107,69 @@ class CrawlCommand extends ContainerAwareCommand
                 if (!$index->exists()) {
                     $index->create();
                 }
+                $index->delete();
+                $index->create();
     
-                $type = $index->getType('foursquare_place');
+                $type = $index->getType('place');
     
                 $mapping = \Elastica\Type\Mapping::create(array(
                     'location' => array('type' => 'geo_point'),
                 ));
                 $type->setMapping($mapping);
     
-                $visitType = $index->getType('foursquare_visit');
+                $visitType = $index->getType('visit');
                 
                 $mapping = new \Elastica\Type\Mapping();
-                $mapping->setParent('foursquare_place');
+                $mapping->setParent('place');
                 $visitType->setMapping($mapping);
     
                 foreach ($json->response->recent as $checkin) {
     
                     $venue = $checkin->venue;
                     $venueId = $venue->id;
+                    $venueName = $venue->name;
                     $location = $venue->location;
     
+                    $placeId = 'foursquare_' . $venueId;
                     $foursquare = array(
-                        'venue' => $venueId,
-                        'name' => $venue->name,
+                        'id' => $venueId,
+                        'name' => $venueName,
                         'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
                         'url' => $venue->canonicalUrl
                     );
     
-                    $document = new \Elastica\Document($venueId, $foursquare);
+                    $document = new \Elastica\Document($placeId, $foursquare);
     
                     $type->addDocument($document);
+
+                    $timestamp = $checkin->createdAt;
+                    $lastCheckin = date('c', $timestamp);
     
-                    $visit = $checkin->user;
-                    $visitId = $visit->id;
-                    $photo = $visit->photo;
+                    $visitor = $checkin->user;
+                    $visitorId = $visitor->id;
+                    $photo = $visitor->photo;
                     $size = '100x100';
-    
+
                     $foursquareVisit = array(
-                        'user' => $userId,
-                        'visit' => $visitId,
-                        'first_name' => $visit->firstName,
+                        'user_id' => $userId,
+                        'visitor_id' => $visitorId,
+                        'place_id' => $placeId,
+                        'place_name' => $venueName,
+                        'first_name' => $visitor->firstName,
                         'photo' => $photo->prefix . $size . $photo->suffix,
+                        'last_checkin' => $lastCheckin,
                     );
-    
-                    if (isset($visit->lastName)) {
-                        $foursquareVisit['last_name'] = $visit->lastName;
+
+                    if (isset($visitor->lastName)) {
+                        $foursquareVisit['last_name'] = $visitor->lastName;
                     }
     
-                    $document = new \Elastica\Document($userId . '/' . $visitId, $foursquareVisit);
-                    $document->setParent($venueId);
+                    $document = new \Elastica\Document($userId . '_foursquare_' . $visitorId, $foursquareVisit);
+                    $document->setParent($placeId);
     
                     $visitType->addDocument($document);
 
-                    $output->writeln("Added Check-In from {$visit->firstName} to {$venue->name}");
+                    $output->writeln("Added Check-In from {$visitor->firstName} to {$venue->name}");
                 }
             }
         }
