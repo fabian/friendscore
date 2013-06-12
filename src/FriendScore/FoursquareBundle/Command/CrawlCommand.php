@@ -136,7 +136,8 @@ class CrawlCommand extends ContainerAwareCommand
 
                         $placeId = 'foursquare_' . $venueId;
                         $foursquare = array(
-                            'id' => $venueId,
+                            'id' => $placeId,
+                            'venue_id' => $venueId,
                             'name' => $venueName,
                             'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
                             'url' => $venue->canonicalUrl
@@ -150,10 +151,12 @@ class CrawlCommand extends ContainerAwareCommand
                         $lastCheckin = date('c', $timestamp);
 
                         $visitorId = $visitor->id;
+                        $visitId = $foursquareId . '_foursquare_' . $visitorId;
                         $photo = $visitor->photo;
                         $size = '100x100';
 
                         $foursquareVisit = array(
+                            'id' => $visitId,
                             'user_id' => $userId,
                             'visitor_id' => $visitorId,
                             'place_id' => $placeId,
@@ -167,7 +170,7 @@ class CrawlCommand extends ContainerAwareCommand
                             $foursquareVisit['last_name'] = $visitor->lastName;
                         }
 
-                        $document = new \Elastica\Document($foursquareId . '_foursquare_' . $visitorId, $foursquareVisit);
+                        $document = new \Elastica\Document($visitId, $foursquareVisit);
                         $document->setParent($placeId);
 
                         $visitType->addDocument($document);

@@ -2,6 +2,7 @@
 
 namespace FriendScore\WebBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -81,6 +82,40 @@ class DefaultController extends Controller
         }
 
         return array('places' => $places, 'visits' => $visits);
+    }
+
+    /**
+     * @Route("/search")
+     * @Template()
+     */
+    public function searchAction(Request $request)
+    {
+        $index = $this->elastica->getIndex('friendscore');
+
+        $q = $request->get('q');
+
+        $user = $this->security->getToken()->getUser();
+
+        $userId = $user->getId();
+        $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
+        $hasChildQuery = new \Elastica\Query\HasChild($userQuery, 'visit');
+        $stringQuery = new \Elastica\Query\QueryString('*' . $q . '*');
+
+        $boolQuery = new \Elastica\Query\Bool();
+        $boolQuery->addMust($hasChildQuery);
+        $boolQuery->addMust($stringQuery);
+
+        $query = new \Elastica\Query();
+        $query->setQuery($boolQuery);
+        $query->setSize(5);
+        $resultSet = $index->getType('place')->search($query);
+
+        $places = array();
+        foreach ($resultSet->getResults() as $result) {
+            $places[] = $result->getData();
+        }
+
+        return array('places' => $places, 'q' => $q);
     }
 
     /**

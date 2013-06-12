@@ -26,8 +26,8 @@
     <a href="{{ url('friendscore_web_default_index') }}">Friend&shy;Score</a>
 </h1>
 
-<form method="get" action="" class="search">
-    <input type="search" name="q" value="" placeholder="Search" />
+<form method="get" action="{{ url('friendscore_web_default_search') }}" class="search">
+    <input type="search" name="q" value="{% if q is defined %}{{ q }}{% endif %}" placeholder="Search" />
 </form>
 
 {% block body %}{% endblock %}
