@@ -21,28 +21,25 @@ class DefaultController
 {
     protected $redirectUri;
 
-    protected $doctrine;
-    protected $security;
     protected $router;
     protected $foursquare;
     protected $foursquareAuth;
+    protected $foursquareStorage;
 
     /**
      * @InjectParams({
-     *     "doctrine" = @Inject("doctrine"),
-     *     "security" = @Inject("security.context"),
      *     "router" = @Inject("router"),
      *     "foursquare" = @Inject("friend_score.foursquare_bundle.service.foursquare"),
      *     "foursquareAuth" = @Inject("friend_score.foursquare_bundle.service.foursquare_auth"),
+     *     "foursquareStorage" = @Inject("friend_score.foursquare_bundle.service.foursquare_storage"),
      * })
      */
-    public function __construct($doctrine, $security, $router, $foursquare, $foursquareAuth)
+    public function __construct($router, $foursquare, $foursquareAuth, $foursquareStorage)
     {
-        $this->doctrine = $doctrine;
-        $this->security = $security;
         $this->router = $router;
         $this->foursquare = $foursquare;
         $this->foursquareAuth = $foursquareAuth;
+        $this->foursquareStorage = $foursquareStorage;
 
         $this->redirectUri = $this->router->generate('friendscore_foursquare_default_callback', array(), true);
     }
@@ -73,18 +70,12 @@ class DefaultController
         $foursquareUser = $this->foursquare->getCurrentUser();
         $foursquareId = $foursquareUser->id;
 
-        $user = $this->getUser();
-
-        if (!$user) {
-            $user = new User($this->security->getToken()->getUser());
-        }
+        $user = $this->foursquareStorage->getUser();
 
         $user->setFoursquareId($foursquareId);
         $user->setAccessToken($accessToken);
 
-        $em = $this->doctrine->getManager();
-        $em->persist($user);
-        $em->flush();
+        $this->foursquareStorage->saveUser($user);
 
         return new RedirectResponse($this->router->generate('friendscore_web_user_index', array(), true));
     }

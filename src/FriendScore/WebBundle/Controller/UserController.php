@@ -14,38 +14,19 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
  */
 class UserController
 {
-    protected $doctrine;
-    protected $security;
-    protected $router;
     protected $foursquare;
+    protected $foursquareStorage;
 
     /**
      * @InjectParams({
-     *     "doctrine" = @Inject("doctrine"),
-     *     "security" = @Inject("security.context"),
-     *     "router" = @Inject("router"),
      *     "foursquare" = @Inject("friend_score.foursquare_bundle.service.foursquare"),
+     *     "foursquareStorage" = @Inject("friend_score.foursquare_bundle.service.foursquare_storage"),
      * })
      */
-    public function __construct($doctrine, $security, $router, $foursquare)
+    public function __construct($foursquare, $foursquareStorage)
     {
-        $this->doctrine = $doctrine;
-        $this->security = $security;
-        $this->router = $router;
         $this->foursquare = $foursquare;
-    }
-
-    protected function getFoursquareUser()
-    {
-        $currentUser = $this->security->getToken()->getUser();
-
-        $user = $this->doctrine
-            ->getRepository('FriendScoreFoursquareBundle:User')
-            ->findOneBy(
-                array('user' => $currentUser)
-            );
-
-        return $user;
+        $this->foursquareStorage = $foursquareStorage;
     }
 
     /**
@@ -56,15 +37,14 @@ class UserController
     {
         $foursquareConnected = false;
 
-        $user = $this->getFoursquareUser();
-        if ($user) {
-            try {
-                $this->foursquare->setAccessToken($user->getAccessToken());
-                $this->foursquare->getCurrentUser();
-                $foursquareConnected = true;
-            } catch (\Exception $e) {
-                // ignore, Foursquare not connected
-            }
+        $user = $this->foursquareStorage->getUser();
+
+        try {
+            $this->foursquare->setAccessToken($user->getAccessToken());
+            $this->foursquare->getCurrentUser();
+            $foursquareConnected = true;
+        } catch (\Exception $e) {
+            // ignore, Foursquare not connected
         }
 
         return array(
