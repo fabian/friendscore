@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<ul class="visits">
+<ul class="items">
     {% for place in places %}
         <li>
             <a
@@ -41,6 +41,7 @@ geoJson.features.push({
     },
     properties: {
         title: '{{ place.name }}',
+        url: '{{ url('friendscore_web_default_place', {'id': place.id}) }}',
         //description: '<a href="{{ url('friendscore_web_default_place', {'id': place.id}) }}">Details</a>',
         // one can customize markers by adding simplestyle properties
         // http://mapbox.com/developers/simplestyle/
@@ -48,6 +49,23 @@ geoJson.features.push({
     }
 });
 {% endfor %}
+
+map.markerLayer.on('ready', function(e) {
+    this.eachLayer(function(marker) {
+
+        var feature = marker.feature;
+
+        // Create custom popup content
+        var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
+
+        // http://leafletjs.com/reference.html#popup
+        marker.bindPopup(popupContent,{
+            closeButton: false,
+            minWidth: 60
+        });
+
+    });
+});
 
 map.markerLayer.setGeoJSON(geoJson);
 map.fitBounds(new L.GeoJSON(geoJson));

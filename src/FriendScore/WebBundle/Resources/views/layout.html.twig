@@ -28,7 +28,7 @@
 
 {% block search %}
 <form method="get" action="{{ url('friendscore_web_default_search') }}" class="search">
-    <input type="text" name="q" value="{% if q is defined %}{{ q }}{% endif %}" placeholder="Search" />
+    <input type="text" name="q" value="{% if q is defined %}{{ q }}{% endif %}" placeholder="Search" autocomplete="off" />
 </form>
 {% endblock %}
 
