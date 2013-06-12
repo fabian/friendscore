@@ -12,6 +12,7 @@ body {
     padding: 0;
     font-family: Lato, Helvetica, Arial, sans-serif;
     color: #2C3E50;
+    font-size: 16px;
 }
 
 #map {
@@ -24,8 +25,8 @@ body {
 
 .container {
     position: absolute;
-    top: 5%;
-    right: 5%;
+    top: 15px;
+    right: 30px;
     width: 20%;
     z-index: 2;
     padding-bottom: 100px;
@@ -36,16 +37,24 @@ body {
 }
 
 h1 {
+    margin: 0;
+}
+
+h1 a {
+    display: block;
+    color: #ECF0F1;
     background-image: url("{{ asset('bundles/friendscoreweb/images/Map@2x.png') }}");
     background-repeat: no-repeat;
     background-size: 100px 100px;
     background-position: 20px 30px;
     padding: 30px 40px 40px 140px;
-    margin: 0;
     font-weight: 500;
     text-rendering: optimizelegibility;
     background-color: #3498DB;
-    color: #ECF0F1;
+}
+
+h1 a:hover {
+    background-color: #2980B9;
 }
 
 h2 {
@@ -65,7 +74,7 @@ a {
 ul {
     padding-left: 0;
     margin: 0;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 ul li {
@@ -76,7 +85,12 @@ ul li {
 ul a {
     display: block;
     color: #2C3E50;
-    padding: 10px 20px;
+    padding: 12px 10px 13px 20px;
+    box-sizing: border-box;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 ul a:hover {
@@ -87,9 +101,22 @@ ul small {
     color: #95A5A6;
 }
 
-.content {
-    position: relative;
+.search {
+    margin: 0;
+    border-bottom: 1px solid #ECF0F1;
 }
+
+.search input {
+    display: block;
+    width: 100%;
+    border: 0;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    outline: none;
+    padding: 15px 10px;
+    margin: 0;
+}
+
 </style>
 </head>
 <body>
@@ -98,20 +125,28 @@ ul small {
 <div class="content">
 
 <h1>
-    Friend&shy;Score
+    <a href="{{ url('friendscore_web_default_index') }}">Friend&shy;Score</a>
 </h1>
 
+<form method="get" action="" class="search">
+    <input type="search" name="q" value="" placeholder="Search" />
+</form>
+
+<!--
 <h2>Recent visits</h2>
+-->
 
 <ul>
     {% for visit in visits %}
         <li>
-            <a href="{{ url('friendscore_web_default_place', {'id': visit.place_id}) }}">
+            <a
+                href="{{ url('friendscore_web_default_place', {'id': visit.place_id}) }}"
+                title="{{ visit.first_name }} checked in to {{ visit.place_name }}">
                 {{ visit.first_name }}
                 checked in to
                 {{ visit.place_name }}
                 <br />
-                <small>{{ visit.last_checkin|date("F jS \\a\\t g:ia") }}</small>
+                <small>{{ visit.last_checkin|date("F jS \\a\\t H:i") }}</small>
             </a>
         </li>
     {% endfor %}
