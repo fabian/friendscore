@@ -108,8 +108,6 @@ class CrawlCommand extends ContainerAwareCommand
                 if (!$index->exists()) {
                     $index->create();
                 }
-                $index->delete();
-                $index->create();
     
                 $type = $index->getType('place');
     
