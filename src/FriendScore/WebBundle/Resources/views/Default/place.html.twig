@@ -5,8 +5,19 @@
 <article class="place">
 
 <h2>{{ place.name }}</h2>
+<p class="details"><a href="{{ place.url }}"><small>Source</small></a></p>
 
-<p><a href="{{ place.url }}"><small>Source</small></a></p>
+<p class="visitors">
+    {% if visitors %}
+        {% for visitor in visitors %}
+            {% if loop.index0 %}, {% endif %}
+            {{ visitor.first_name }}
+        {% endfor %}
+        has been here.
+    {% else %}
+        No Check-Ins by friends yet.
+    {% endif %}
+</p>
 
 </article>
 

@@ -90,12 +90,32 @@ class DefaultController extends Controller
     public function placeAction($id)
     {
         $index = $this->elastica->getIndex('friendscore');
-        if (!$index->exists()) {
-            $index->create();
-        }
 
         $place = $index->getType('place')->getDocument($id);
 
-        return array('place' => $place);
+        $visitors = array();
+        $user = $this->security->getToken()->getUser();
+        if ($user) {
+
+            $userId = $user->getId();
+            $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
+            $placeQuery = new \Elastica\Query\Term(array('place_id' => $id));
+
+            $boolQuery = new \Elastica\Query\Bool();
+            $boolQuery->addMust($userQuery);
+            $boolQuery->addMust($placeQuery);
+
+            $query = new \Elastica\Query();
+            $query->setQuery($boolQuery);
+            $query->setSort(array('last_checkin' => 'desc'));
+            $query->setSize(5);
+            $resultSet = $index->getType('visit')->search($query);
+
+            foreach ($resultSet->getResults() as $result) {
+                $visitors[] = $result->getData();
+            }
+        }
+
+        return array('place' => $place, 'visitors' => $visitors);
     }
 }
