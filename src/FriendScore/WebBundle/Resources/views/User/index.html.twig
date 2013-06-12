@@ -1,0 +1,14 @@
+{% extends 'FriendScoreWebBundle::layout.html.twig' %}
+
+{% block body %}
+
+<article class="place">
+
+<h2>Hi {{ app.user.username }}</h2>
+<p class="details"><a href="{{ path('fos_user_security_login') }}"><small>Logout</small></a></p>
+
+</article>
+
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -110,6 +110,10 @@ a {
     text-decoration: none;
 }
 
+a:hover small {
+    color: #E67E22;
+}
+
 p {
     padding: @padding;
     margin: 0;
@@ -117,6 +121,10 @@ p {
     &.details {
         padding-top: 0;
         margin-top: -5px;
+    }
+    
+    &.user {
+        border-top: @border;
     }
 }
 
@@ -154,6 +162,10 @@ ul.visits {
     
     a:hover {
         background-color: #ECF0F1;
+        
+        small {
+            color: #95A5A6;
+        }
     }
 }
 
