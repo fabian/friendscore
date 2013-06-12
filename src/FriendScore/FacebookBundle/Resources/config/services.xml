@@ -17,4 +17,27 @@
         </service>
     </services>
     -->
+    
+    <parameters>
+            <parameter key="friend_score.facebook_bundle.elastica.class">Elastica\Client</parameter>
+            <parameter key="friend_score.facebook_bundle.elastisearch.config" type="collection">
+                <parameter key="host">%elasticsearch_host%</parameter>
+                <parameter key="port">%elasticsearch_port%</parameter>
+                <parameter key="path">%elasticsearch_path%</parameter>
+            </parameter>
+            <parameter key="friend_score.facebook_bundle.client.class">Guzzle\Http\Client</parameter>
+            <parameter key="friend_score.facebook_bundle.client_id">355382504571696</parameter>
+            <parameter key="friend_score.facebook_bundle.client_secret">ec0c90191bee691e807c250b55275687</parameter>
+        </parameters>
+    
+        <services>
+            <service id="friend_score.facebook_bundle.elastica" class="%friend_score.facebook_bundle.elastica.class%">
+                 <argument>%friend_score.facebook_bundle.elastisearch.config%</argument>
+            </service>
+            <service id="friend_score.facebook_bundle.facebook.client" class="%friend_score.facebook_bundle.client.class%">
+                 <argument>https://graph.facebook.com</argument>
+            </service>
+        </services>
+    
+    
 </container>
