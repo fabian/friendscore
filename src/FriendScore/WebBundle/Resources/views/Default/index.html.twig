@@ -60,7 +60,8 @@ geoJson.features.push({
     },
     properties: {
         title: '{{ place.name }}',
-        //description: '<a href="{{ url('friendscore_web_default_place', {'id': place.id}) }}">Details</a>',
+        url: '{{ url('friendscore_web_default_place', {'id': place.id}) }}',
+        description: '<a href="{{ url('friendscore_web_default_place', {'id': place.id}) }}">Details</a>',
         // one can customize markers by adding simplestyle properties
         // http://mapbox.com/developers/simplestyle/
         'marker-color': '#E67E22'
@@ -70,6 +71,23 @@ geoJson.features.push({
 
 map.markerLayer.setGeoJSON(geoJson);
 
+
+map.markerLayer.on('ready', function(e) {
+    this.eachLayer(function(marker) {
+
+        var feature = marker.feature;
+
+        // Create custom popup content
+        var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
+
+        // http://leafletjs.com/reference.html#popup
+        marker.bindPopup(popupContent,{
+            closeButton: false,
+            minWidth: 60
+        });
+
+    });
+});
 
 // This uses the HTML5 geolocation API, which is available on
 // most mobile browsers and modern browsers, but not in Internet Explorer
