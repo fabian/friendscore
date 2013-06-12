@@ -1,0 +1,58 @@
+{% extends 'FriendScoreWebBundle::layout.html.twig' %}
+
+{% block body %}
+
+<article class="place">
+
+<h2>{{ place.name }}</h2>
+<p class="details"><a href="{{ place.url }}"><small>Source</small></a></p>
+
+<p class="visitors">
+    {% if visitors %}
+        {% for visitor in visitors %}
+            {% if loop.index0 %}, {% endif %}
+            {{ visitor.first_name }}
+        {% endfor %}
+        has been here.
+    {% else %}
+        No Check-Ins by friends yet.
+    {% endif %}
+</p>
+
+</article>
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+var geoJson = {
+    type: 'FeatureCollection',
+    features: []
+};
+
+geoJson.features.push({
+    // this feature is in the GeoJSON format: see geojson.org
+    // for the full specification
+    type: 'Feature',
+    geometry: {
+        type: 'Point',
+        // coordinates here are in longitude, latitude order because
+        // x, y is the standard for GeoJSON and many formats
+        coordinates: [{{ place.location.lon }}, {{ place.location.lat }}]
+    },
+    properties: {
+        title: '{{ place.name }}',
+        //description: '<a href="{{ url('friendscore_web_default_place', {'id': place.id}) }}">Details</a>',
+        // one can customize markers by adding simplestyle properties
+        // http://mapbox.com/developers/simplestyle/
+        'marker-color': '#E67E22'
+    }
+});
+
+map.markerLayer.setGeoJSON(geoJson);
+
+map.setView([{{ place.location.lat }}, {{ place.location.lon }}], 16);
+
+</script>
+{% endblock %}

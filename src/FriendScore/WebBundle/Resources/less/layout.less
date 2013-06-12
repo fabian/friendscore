@@ -1,0 +1,196 @@
+
+@padding: 10px 10px 10px 20px;
+@border: 1px solid #ECF0F1;
+@font-family: Lato, Helvetica, Arial, sans-serif;
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: @font-family;
+    color: #2C3E50;
+    font-size: 16px;
+}
+
+#map {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.container {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    width: 20%;
+    z-index: 2;
+    padding-bottom: 100px;
+}
+
+.container .content {
+    background-color: #fff;
+    padding-bottom: 10px;
+}
+
+h1 {
+    margin: 0;
+}
+
+h1 a {
+    display: block;
+    color: #ECF0F1;
+    background-image: url("/bundles/friendscoreweb/images/Map@2x.png");
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+    background-position: 20px 30px;
+    padding: 30px 40px 40px 140px;
+    font-weight: 500;
+    text-rendering: optimizelegibility;
+    background-color: #3498DB;
+}
+
+h1 a:hover {
+    background-color: #2980B9;
+}
+
+article.checkins h2 {
+    font-weight: normal;
+    font-size: 14px;
+    color: #95A5A6;
+    text-align: right;
+    margin: 0;
+    padding: 10px;
+}
+
+article.place h2 {
+    padding: @padding;
+    margin: 0;
+    font-weight: 500;
+}
+
+article.login {
+    
+    input[type=text],
+    input[type=password] {
+        width: 100%;
+        display: block;
+        border: 0;
+        outline: none;
+        margin: 0;
+        box-sizing: border-box;
+        border-bottom: @border;
+    }
+    
+    .actions {
+        padding: @padding;
+
+        input[type=submit] {
+            line-height: 20px;
+            padding: 10px 18px 11px;
+            color: #fff;
+            background-color: #E67E22;
+            font-weight: 500;
+            border: 0;
+            cursor: pointer;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        input[type=submit]:hover,
+        input[type=submit]:focus,
+        input[type=submit]:active {
+            background-color: #f5933d;
+        }
+    }
+}
+
+a {
+    color: #D35400;
+    text-decoration: none;
+}
+
+a:hover small {
+    color: #E67E22;
+}
+
+p {
+    padding: @padding;
+    margin: 0;
+    
+    &.details {
+        padding-top: 0;
+        margin-top: -5px;
+    }
+    
+    &.user {
+        border-top: @border;
+    }
+}
+
+input {
+    font-family: @font-family;
+    font-size: 16px;
+}
+
+input[type=text],
+input[type=password] {
+    padding: 15px 10px 15px 20px;
+}
+
+ul.items {
+    padding-left: 0;
+    padding-bottom: 7px;
+    margin: 0;
+
+    li {
+        list-style-type: none;
+        margin: 0;
+    }
+
+    a {
+        display: block;
+        color: #2C3E50;
+        padding: 12px 10px 13px 20px;
+        margin-bottom: -7px;
+        box-sizing: border-box;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    a:hover {
+        background-color: #ECF0F1;
+        
+        small {
+            color: #95A5A6;
+        }
+    }
+}
+
+small {
+    color: #95A5A6;
+
+    &.success {
+        color: #2ECC71;
+    }
+
+    &.error {
+        color: #E74C3C;
+    }
+}
+
+.search {
+    margin: 0;
+    border-bottom: @border;
+}
+
+.search input {
+    display: block;
+    width: 100%;
+    border: 0;
+    outline: none;
+    margin: 0;
+    box-sizing: border-box;
+}
