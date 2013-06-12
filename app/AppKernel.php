@@ -25,7 +25,6 @@ class AppKernel extends Kernel
             new FriendScore\FoursquareBundle\FriendScoreFoursquareBundle(),
             new FriendScore\FacebookBundle\FriendScoreFacebookBundle(),
             new FriendScore\TwitterBundle\FriendScoreTwitterBundle(),
-            new FriendScore\WebBundle\FriendScoreWebBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
