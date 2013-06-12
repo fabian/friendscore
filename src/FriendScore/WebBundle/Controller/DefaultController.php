@@ -58,7 +58,7 @@ class DefaultController extends Controller
                 $hasChildQuery = new \Elastica\Query\HasChild($userQuery, 'visit');
                 $query = new \Elastica\Query();
                 $query->setQuery($hasChildQuery);
-                $query->setSize(3);
+                $query->setSize(900);
                 $resultSet = $index->search($query);
                 //var_dump($resultSet->getResponse());
 

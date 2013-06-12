@@ -190,7 +190,7 @@ geoJson.features.push({
     },
     properties: {
         title: '{{ place.name }}',
-        //description: 'Just one of me',
+        //description: '<a href="{{ url('friendscore_web_default_place', {'id': place.id}) }}">Details</a>',
         // one can customize markers by adding simplestyle properties
         // http://mapbox.com/developers/simplestyle/
         'marker-color': '#E67E22'
@@ -199,6 +199,22 @@ geoJson.features.push({
 {% endfor %}
 
 map.markerLayer.setGeoJSON(geoJson);
+
+
+// This uses the HTML5 geolocation API, which is available on
+// most mobile browsers and modern browsers, but not in Internet Explorer
+//
+// See this chart of compatibility for details:
+// http://caniuse.com/#feat=geolocation
+if (navigator.geolocation) {
+    map.locate();
+}
+
+// Once we've got a position, zoom and center the map
+// on it, and add a single marker.
+map.on('locationfound', function(e) {
+    map.setView(e.latlng, 16);
+});
 
 </script>
 
