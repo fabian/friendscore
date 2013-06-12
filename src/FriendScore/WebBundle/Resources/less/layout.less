@@ -1,0 +1,123 @@
+
+@padding: 10px 10px 10px 20px;
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    color: #2C3E50;
+    font-size: 16px;
+}
+
+#map {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.container {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    width: 20%;
+    z-index: 2;
+    padding-bottom: 100px;
+}
+
+.container .content {
+    background-color: #fff;
+    padding-bottom: 10px;
+}
+
+h1 {
+    margin: 0;
+}
+
+h1 a {
+    display: block;
+    color: #ECF0F1;
+    background-image: url("/bundles/friendscoreweb/images/Map@2x.png");
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+    background-position: 20px 30px;
+    padding: 30px 40px 40px 140px;
+    font-weight: 500;
+    text-rendering: optimizelegibility;
+    background-color: #3498DB;
+}
+
+h1 a:hover {
+    background-color: #2980B9;
+}
+
+article.checkins h2 {
+    font-weight: normal;
+    font-size: 14px;
+    color: #95A5A6;
+    text-align: right;
+    margin: 0;
+    padding: 10px;
+}
+
+article.place h2 {
+    padding: @padding;
+    margin: 0;
+    font-weight: 500;
+}
+
+a {
+    color: #D35400;
+    text-decoration: none;
+}
+
+p {
+    padding: @padding;
+    margin: 0;
+}
+
+ul {
+    padding-left: 0;
+    margin: 0;
+}
+
+ul li {
+    list-style-type: none;
+    margin: 0;
+}
+
+ul a {
+    display: block;
+    color: #2C3E50;
+    padding: 12px 10px 13px 20px;
+    box-sizing: border-box;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul a:hover {
+    background-color: #ECF0F1;
+}
+
+small {
+    color: #95A5A6;
+}
+
+.search {
+    margin: 0;
+    border-bottom: 1px solid #ECF0F1;
+}
+
+.search input {
+    display: block;
+    width: 100%;
+    border: 0;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    outline: none;
+    padding: 15px 10px;
+    margin: 0;
+}
