@@ -10,11 +10,12 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: Lato, Helvetica, Arial, sans-serif;
+    color: #2C3E50;
 }
 
 #map {
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     width: 100%;
@@ -25,33 +26,98 @@ body {
     position: absolute;
     top: 5%;
     right: 5%;
-    padding: 10px 20px;
     width: 20%;
     z-index: 2;
+    padding-bottom: 100px;
+}
+
+.container .content {
     background-color: #fff;
+}
+
+h1 {
+    background-image: url("{{ asset('bundles/friendscoreweb/images/Map@2x.png') }}");
+    background-repeat: no-repeat;
+    background-size: 100px 100px;
+    background-position: 20px 30px;
+    padding: 30px 40px 40px 140px;
+    margin: 0;
+    font-weight: 500;
+    text-rendering: optimizelegibility;
+    background-color: #3498DB;
+    color: #ECF0F1;
+}
+
+h2 {
+    font-weight: normal;
+    font-size: 14px;
+    color: #95A5A6;
+    text-align: right;
+    margin: 0;
+    padding: 10px;
+}
+
+a {
+    color: #D35400;
+    text-decoration: none;
+}
+
+ul {
+    padding-left: 0;
+    margin: 0;
+    padding-bottom: 20px;
+}
+
+ul li {
+    list-style-type: none;
+    margin: 0;
+}
+
+ul a {
+    display: block;
+    color: #2C3E50;
+    padding: 10px 20px;
+}
+
+ul a:hover {
+    background-color: #ECF0F1;
+}
+
+ul small {
+    color: #95A5A6;
+}
+
+.content {
+    position: relative;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
+<div class="content">
 
-<img src="{{ asset('bundles/friendscoreweb/images/Map@2x.png') }}" width="100" height="100" />
+<h1>
+    Friend&shy;Score
+</h1>
 
 <h2>Recent visits</h2>
 
 <ul>
     {% for visit in visits %}
         <li>
-            {{ visit.first_name }}
-            checked in to
-            <a href="{{ url('friendscore_web_default_place', {'id': visit.place_id}) }}">{{ visit.place_name }}</a>
-            <br />
-            <small>{{ visit.last_checkin|date("F jS \\a\\t g:ia") }}</small>
+            <a href="{{ url('friendscore_web_default_place', {'id': visit.place_id}) }}">
+                {{ visit.first_name }}
+                checked in to
+                {{ visit.place_name }}
+                <br />
+                <small>{{ visit.last_checkin|date("F jS \\a\\t g:ia") }}</small>
+            </a>
         </li>
     {% endfor %}
 </ul>
 
+<!--
 <h2>Recommended places</h2>
 
 <ul>
@@ -59,6 +125,9 @@ body {
         <li><a href="{{ place.url }}">{{ place.name }}</a></li>
     {% endfor %}
 </ul>
+-->
+
+</div>
 </div>
 
 <div id="map"></div>
@@ -89,7 +158,7 @@ geoJson.features.push({
         //description: 'Just one of me',
         // one can customize markers by adding simplestyle properties
         // http://mapbox.com/developers/simplestyle/
-        'marker-color': '#f77d10'
+        'marker-color': '#E67E22'
     }
 });
 {% endfor %}

@@ -70,7 +70,7 @@ class DefaultController extends Controller
                 $query = new \Elastica\Query();
                 $query->setQuery($userQuery);
                 $query->setSort(array('last_checkin' => 'desc'));
-                $query->setSize(3);
+                $query->setSize(5);
                 $resultSet = $index->getType('visit')->search($query);
                 //var_dump($resultSet->getResponse());exit;
 
