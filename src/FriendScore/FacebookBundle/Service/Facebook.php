@@ -83,8 +83,6 @@ class Facebook
         $body = $response->getBody();
         $json = json_decode($body);
         
-        var_dump($json);
-        
-        return 'CAAFDNZBZCxwzABAE8WhUr5xvinh9CfP2FWDIZBrgNTRa6dBiWXfcShzVRLgtxz8kOyh7IsYKfXkSZAE5TZAyxZBE2ZAkyPRxqv3GBZBGJCfO4BQCoDaN4DzEiab9ZAvP1irlBa14xsHdT0stvMamnn8KictKNhU3ZBUJJD5xcVZCZB2CjPZCU2Xb5rh9CwdUPBuwzRIEZD';
+        return $json->access_token;
     }
 }
