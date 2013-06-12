@@ -4,6 +4,7 @@ namespace FriendScore\FoursquareBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -60,15 +61,6 @@ class DefaultController
     }
 
     /**
-     * @Route("/")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        return array('client_id' => $this->foursquare->getClientId(), 'redirect_uri' => $this->redirectUri);
-    }
-
-    /**
      * @Route("/callback")
      */
     public function callbackAction(Request $request)
@@ -94,6 +86,6 @@ class DefaultController
         $em->persist($user);
         $em->flush();
 
-        return new Response(json_encode($foursquareUser));
+        return new RedirectResponse($this->router->generate('friendscore_web_user_index', array(), true));
     }
 }

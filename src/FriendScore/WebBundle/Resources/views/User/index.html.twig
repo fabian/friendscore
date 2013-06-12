@@ -4,8 +4,24 @@
 
 <article class="place">
 
-<h2>Hi {{ app.user.username }}</h2>
-<p class="details"><a href="{{ path('fos_user_security_login') }}"><small>Logout</small></a></p>
+<ul class="items">
+    <li>
+        <a href="https://foursquare.com/oauth2/authenticate?client_id={{ foursquare_client_id }}&amp;redirect_uri={{ url('friendscore_foursquare_default_callback')|url_encode }}&amp;response_type=code">
+            Foursquare<br/>
+            {% if foursquare_connected %}
+                <small class="success">Connected</small>
+            {% else %}
+                <small>Not connected</small>
+            {% endif %}
+        </a>
+    </li>
+    <li>
+        <a href="">
+            Facebook<br/>
+            <small>Not connected</small>
+        </a>
+    </li>
+</ul>
 
 </article>
 

@@ -12,7 +12,7 @@ use JMS\DiExtraBundle\Annotation\InjectParams;
 /**
  * Web Controller
  */
-class DefaultController extends Controller
+class DefaultController
 {
     protected $doctrine;
     protected $security;
