@@ -44,19 +44,6 @@ class DefaultController
         $this->redirectUri = $this->router->generate('friendscore_foursquare_default_callback', array(), true);
     }
 
-    protected function getUser()
-    {
-        $currentUser = $this->security->getToken()->getUser();
-
-        $user = $this->doctrine
-            ->getRepository('FriendScoreFoursquareBundle:User')
-            ->findOneBy(
-                array('user' => $currentUser)
-            );
-
-        return $user;
-    }
-
     /**
      * @Route("/callback")
      */
