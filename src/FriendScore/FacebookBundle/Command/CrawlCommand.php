@@ -98,6 +98,7 @@ class CrawlCommand extends ContainerAwareCommand
 
                             $facebookCheckin = array(
                                 'user_id' => $userId,
+                                'place_id' => $placeIdFacebook,
                                 'checkin' => $checkinId,
                                 'first_name' => $friend->first_name,
                                 'last_name' => $friend->last_name,
