@@ -14,9 +14,13 @@ class FoursquareTest extends \PHPUnit_Framework_TestCase
         $this->foursquare = new Foursquare($this->client, '123', 'ABC');
     }
 
+    public function testGetClientId()
+    {
+        $this->assertEquals('123', $this->foursquare->getClientId());
+    }
+
     public function testGetCurrentUser()
     {
-
         $request = $this->getMockBuilder('Guzzle\Http\Message\Request')
             ->disableOriginalConstructor()
             ->getMock();
