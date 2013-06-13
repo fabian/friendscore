@@ -13,13 +13,75 @@ class CrawlCommand extends ContainerAwareCommand
 	protected $doctrine;
     protected $elastica;
     protected $client;
- 
+    
     protected function configure()
     {
         $this
             ->setName('facebook:crawl')
             ->setDescription('Index all facebook data')
         ;
+    }
+    
+    protected function crawlCheckings($output, $json, $type, $visitType, $accessToken) {
+        if(isset($json->friends) && isset($json->friends->data)) {
+            foreach ($json->friends->data as $friend) {
+                if (isset($friend->checkins) && $friend->checkins) {
+                    foreach($friend->checkins->data as $checkin) {
+
+                        $place = $checkin->place;
+                        $placeId = $place->id;
+                        $location = $place->location;
+                        $checkinId = $checkin->id;
+
+                        $placeIdFacebook = 'facebook_' . $placeId;
+
+                        $facebook = array(
+                            'id' => $placeIdFacebook,
+                            'place_id' => $placeId,
+                            'name' => $place->name,
+                            'location'=> array('lat' => $location->latitude, 'lon' => $location->longitude),
+                            'url' => 'http://graph.facebook.com/' . $placeId,
+                        );
+
+                        $document = new \Elastica\Document($placeIdFacebook, $facebook);
+
+                        $type->addDocument($document);
+
+                        $facebookCheckin = array(
+                            'user_id' => $userId,
+                            'place_id' => $placeIdFacebook,
+                            'checkin' => $checkinId,
+                            'first_name' => $friend->first_name,
+                            'last_name' => $friend->last_name,
+                        );
+
+                        $document = new \Elastica\Document($userId . '_facebook_' . $checkinId, $facebookCheckin);
+                        $document->setParent($placeIdFacebook);
+
+                        $visitType->addDocument($document);
+
+                        $output->writeln("Added Check-In from {$friend->first_name} to {$place->name}");    
+                    }
+               
+                }
+            }
+        }
+        
+        
+        if(isset($json->paging) && isset($json->paging->next)) {
+            
+            $nextUri = str_replace("https://graph.facebook.com","",$json->paging->next);
+            $request = $this->client->get($nextUri);
+            $query = $request->getQuery();
+            $query->set('access_token', $accessToken);
+            
+            $response = $request->send();
+            $body = $response->getBody();
+            $json = json_decode($body);
+            var_dump($json);
+            
+            $this->crawlCheckings($output, $json, $type, $visitType, $accessToken);
+        }
     }
 	
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -44,16 +106,15 @@ class CrawlCommand extends ContainerAwareCommand
 
                 // API call
                 //get data of user's friends
-                $request = $this->client->get('me/friends');
+                $request = $this->client->get($user->getFacebookId());
                 $query = $request->getQuery();
                 $query->set('access_token', $accessToken);
+                $query->set('fields', 'id,friends.fields(checkins.fields(place,coordinates),first_name,last_name)');
                 
                 $response = $request->send();
                 $body = $response->getBody();
-                $query->set('fields', 'first_name,last_name,checkins.fields(coordinates,place)');
                 $json = json_decode($body);
-//                var_dump($json);
-                
+
                 $index = $this->elastica->getIndex('friendscore');
                 if (!$index->exists()) {
                     $index->create();
@@ -72,49 +133,8 @@ class CrawlCommand extends ContainerAwareCommand
                 $mapping->setParent('place');
                 $visitType->setMapping($mapping);
                 
-                foreach ($json->data as $friend) {
-                    if (isset($friend->checkins) && $friend->checkins) {
-
-                        foreach($friend->checkins->data as $checkin) {
-
-                            $place = $checkin->place;
-                            $placeId = $place->id;
-                            $location = $place->location;
-                            $checkinId = $checkin->id;
-
-                            $placeIdFacebook = 'facebook_' . $placeId;
-
-                            $facebook = array(
-                                'id' => $placeIdFacebook,
-                                'place_id' => $placeId,
-                                'name' => $place->name,
-                                'location'=> array('lat' => $location->latitude, 'lon' => $location->longitude),
-                                'url' => 'http://graph.facebook.com/' . $placeId,
-                            );
-
-                            $document = new \Elastica\Document($placeIdFacebook, $facebook);
-
-                            $type->addDocument($document);
-
-                            $facebookCheckin = array(
-                                'user_id' => $userId,
-                                'place_id' => $placeIdFacebook,
-                                'checkin' => $checkinId,
-                                'first_name' => $friend->first_name,
-                                'last_name' => $friend->last_name,
-                            );
-
-                            $document = new \Elastica\Document($userId . '_facebook_' . $checkinId, $facebookCheckin);
-                            $document->setParent($placeIdFacebook);
-
-                            $visitType->addDocument($document);
-
-                            $output->writeln("Added Check-In from {$friend->first_name} to {$place->name}");    
-                        }
-                       
-                    }
-                }
-                
+                //crawling
+                $this->crawlCheckings($output, $json, $type, $visitType, $accessToken);
             }
             
         }
