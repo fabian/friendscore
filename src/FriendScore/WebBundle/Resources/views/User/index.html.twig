@@ -16,9 +16,13 @@
         </a>
     </li>
     <li>
-        <a href="">
+        <a href="https://www.facebook.com/dialog/oauth?client_id={{ facebook_client_id }}&amp;redirect_uri={{ url('friendscore_facebook_default_callback')|url_encode }}">
             Facebook<br/>
-            <small>Not connected</small>
+            {% if facebook_connected %}
+                <small class="success">Connected</small>
+            {% else %}
+                <small>Not connected</small>
+            {% endif %}
         </a>
     </li>
 </ul>

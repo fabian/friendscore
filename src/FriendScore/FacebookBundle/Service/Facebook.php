@@ -81,8 +81,8 @@ class Facebook
         var_dump($redirectUri);
         
         $body = $response->getBody();
-        $json = json_decode($body);
+        parse_str($body, $arr);
         
-        return $json->access_token;
+        return $arr['access_token'];
     }
 }
