@@ -35,5 +35,5 @@ php app/console server:run
 To execute the unit tests run the following command:
 
 ```
-vendor/bin/phpunit -c app/
+bin/phpunit -c app/
 ```
