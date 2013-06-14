@@ -48,6 +48,7 @@ var geoJson = {
 };
 
 {% for place in places %}
+{% if place.location is defined %}
 geoJson.features.push({
     // this feature is in the GeoJSON format: see geojson.org
     // for the full specification
@@ -67,6 +68,7 @@ geoJson.features.push({
         'marker-color': '#E67E22'
     }
 });
+{% endif %}
 {% endfor %}
 
 map.markerLayer.setGeoJSON(geoJson);
