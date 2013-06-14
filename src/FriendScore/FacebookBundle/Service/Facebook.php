@@ -73,12 +73,8 @@ class Facebook
         $query->set('client_secret', $this->clientSecret);
         $query->set('redirect_uri', $redirectUri);
         $query->set('code', $code);
-        
+     
         $response = $request->send();
-        var_dump($this->clientId);
-        var_dump($this->clientSecret);
-        var_dump($code);
-        var_dump($redirectUri);
         
         $body = $response->getBody();
         parse_str($body, $arr);

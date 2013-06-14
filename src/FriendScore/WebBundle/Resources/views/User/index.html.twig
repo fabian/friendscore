@@ -16,7 +16,7 @@
         </a>
     </li>
     <li>
-        <a href="https://www.facebook.com/dialog/oauth?client_id={{ facebook_client_id }}&amp;redirect_uri={{ url('friendscore_facebook_default_callback')|url_encode }}&scope=friends_checkins">
+        <a href="https://www.facebook.com/dialog/oauth?client_id={{ facebook_client_id }}&amp;redirect_uri={{ url('friendscore_facebook_default_callback')|url_encode }}&amp;scope=friends_checkins">
             Facebook<br/>
             {% if facebook_connected %}
                 <small class="success">Connected</small>
