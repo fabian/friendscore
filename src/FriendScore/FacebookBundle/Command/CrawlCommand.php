@@ -91,7 +91,7 @@ class CrawlCommand extends ContainerAwareCommand
 
                                 $place = $checkin->place;
                                 $placeId = $place->id;
-                                $location = isset($place->location) ? $place->location : undefined;
+                                $location = isset($place->location) ? $place->location : null;
                                 $checkinId = $checkin->id;
 
                                 $placeIdFacebook = 'facebook_' . $placeId;
