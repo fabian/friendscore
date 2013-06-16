@@ -202,9 +202,6 @@ class DefaultController
             foreach ($visitResultSet->getResults() as $visitResult) {
                 $friendId = $visitResult->getData()['visitor_id'];
                 
-                var_dump($visitResult->getData());
-
-                
                 //check start of string for fb or fq
                 $checkinsToAdd = strstr($visitResult->getData()['place_id'], '_', true);;
                 
