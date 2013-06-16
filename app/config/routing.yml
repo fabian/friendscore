@@ -3,11 +3,6 @@ friend_score_web:
     type:     annotation
     prefix:   /
 
-friend_score_user:
-    resource: "@FriendScoreUserBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 friend_score_foursquare:
     resource: "@FriendScoreFoursquareBundle/Controller/"
     type:     annotation
