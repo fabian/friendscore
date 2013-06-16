@@ -91,6 +91,7 @@ class CrawlCommand extends ContainerAwareCommand
 
                                 $place = $checkin->place;
                                 $placeId = $place->id;
+                                $friendId = $friend->id;
                                 $location = isset($place->location) ? $place->location : null;
                                 $checkinId = $checkin->id;
 
@@ -114,7 +115,6 @@ class CrawlCommand extends ContainerAwareCommand
                                 $facebookCheckin = array(
                                     'user_id' => $userId,
                                     'place_id' => $placeIdFacebook,
-                                    'checkin' => $checkinId,
                                     'place_name' => $place->name,
                                     'visitor_id' => $friend->id,
                                     'first_name' => $friend->first_name,
@@ -122,7 +122,7 @@ class CrawlCommand extends ContainerAwareCommand
                                     'last_checkin' => $checkin->created_time,
                                 );
 
-                                $document = new \Elastica\Document($userId . '_facebook_' . $checkinId, $facebookCheckin);
+                                $document = new \Elastica\Document($userId . '_facebook_' . $friendId, $facebookCheckin);
                                 $document->setParent($placeIdFacebook);
 
                                 $visitType->addDocument($document);
