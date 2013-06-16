@@ -11,7 +11,7 @@
     {% if visitors %}
         {% for visitor in visitors %}
             {% if loop.index0 %}, {% endif %}
-            {{ visitor.first_name }}
+            <span title="{{ visitor.first_name }} {{ visitor.last_name }}">{{ visitor.first_name }}</span>
         {% endfor %}
         has been here.
     {% else %}
