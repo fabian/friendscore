@@ -37,3 +37,9 @@ To execute the unit tests run the following command:
 ```
 bin/phpunit -c app/
 ```
+
+After running the tests you can view the coverage with: 
+
+```
+open app/coverage/index.html
+```
