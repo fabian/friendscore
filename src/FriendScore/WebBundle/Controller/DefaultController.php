@@ -230,7 +230,7 @@ class DefaultController
         }
         
         //how to do a constant?
-        $baspoint = 1 / (3 * 2) / 2;
+        $basepoint = 1 / (3 * 2) / 2;
         
         $friendscore = 0;
 
@@ -239,9 +239,12 @@ class DefaultController
 
             foreach($service as $friendCheckin) {
                 if($friendCheckin > 1) {
-                    $serviceScore += $baspoint * 2;
+                    if($friendCheckin > 3) {
+                        $friendCheckin = 3;
+                    }
+                    $serviceScore += $friendCheckin * $basepoint * 2;
                 } else {
-                    $serviceScore += $baspoint;
+                    $serviceScore += $basepoint;
                 }
             }
    
