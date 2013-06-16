@@ -14,6 +14,9 @@ use Guzzle\Http\Client;
 
 use FriendScore\FacebookBundle\Entity\User;
 
+/**
+ * Facebook Controller
+ */
 class DefaultController
 {
     protected $redirectUri;
