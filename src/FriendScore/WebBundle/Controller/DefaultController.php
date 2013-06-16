@@ -247,6 +247,6 @@ class DefaultController
             $serviceScore = 0;
         }
         
-        return $friendscore;
+        return round($friendscore, 2);
     }
 }
