@@ -155,6 +155,15 @@ class CrawlCommand extends ContainerAwareCommand
                         $photo = $visitor->photo;
                         $size = '100x100';
 
+                        try {
+                            $visit = $index->getType('visit')->getDocument($visitId)->getData();
+                        } catch (\Elastica\Exception\NotFoundException $e) {
+                            $visit = array();
+                        }
+
+                        $checkins = isset($visit['checkins']) ? $visit['checkins'] : array();
+                        $checkins[] = $checkin->id;
+
                         $foursquareVisit = array(
                             'id' => $visitId,
                             'user_id' => $userId,
@@ -162,13 +171,11 @@ class CrawlCommand extends ContainerAwareCommand
                             'place_id' => $placeId,
                             'place_name' => $venueName,
                             'first_name' => $visitor->firstName,
+                            'last_name' => isset($visitor->lastName) ? $visitor->lastName : '',
                             'photo' => $photo->prefix . $size . $photo->suffix,
                             'last_checkin' => $lastCheckin,
+                            'checkins' => array_unique($checkins),
                         );
-
-                        if (isset($visitor->lastName)) {
-                            $foursquareVisit['last_name'] = $visitor->lastName;
-                        }
 
                         $document = new \Elastica\Document($visitId, $foursquareVisit);
                         $document->setParent($placeId);

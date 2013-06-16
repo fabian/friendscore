@@ -111,7 +111,17 @@ class CrawlCommand extends ContainerAwareCommand
                                 $document = new \Elastica\Document($placeIdFacebook, $facebook);
 
                                 $type->addDocument($document);
-                             
+
+                                $visitId = $userId . '_facebook_' . $friendId;
+                                try {
+                                    $visit = $index->getType('visit')->getDocument($visitId)->getData();
+                                } catch (\Elastica\Exception\NotFoundException $e) {
+                                    $visit = array();
+                                }
+
+                                $checkins = isset($visit['checkins']) ? $visit['checkins'] : array();
+                                $checkins[] = $checkin->id;
+
                                 $facebookCheckin = array(
                                     'user_id' => $userId,
                                     'place_id' => $placeIdFacebook,
@@ -120,9 +130,10 @@ class CrawlCommand extends ContainerAwareCommand
                                     'first_name' => $friend->first_name,
                                     'last_name' => $friend->last_name,
                                     'last_checkin' => $checkin->created_time,
+                                    'checkins' => array_unique($checkins),
                                 );
 
-                                $document = new \Elastica\Document($userId . '_facebook_' . $friendId, $facebookCheckin);
+                                $document = new \Elastica\Document($visitId, $facebookCheckin);
                                 $document->setParent($placeIdFacebook);
 
                                 $visitType->addDocument($document);
