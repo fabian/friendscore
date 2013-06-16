@@ -38,4 +38,7 @@
         </whitelist>
     </filter>
 
+    <logging>
+        <log type="coverage-html" target="coverage" />
+    </logging>
 </phpunit>
