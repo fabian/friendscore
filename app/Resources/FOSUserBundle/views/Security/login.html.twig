@@ -17,7 +17,8 @@
     <input type="hidden" id="remember_me" name="_remember_me" value="on" />
 
     <div class="actions">
-        <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+        <input type="submit" id="_submit" name="_submit" value="Login" />
+        <a href="{{ path('fos_user_registration_register') }}">Register</a>
     </div>
 </form>
 {% endblock fos_user_content %}
