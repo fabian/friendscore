@@ -182,7 +182,8 @@ class DefaultController
         
         $friendsCheckins = array();
         foreach ($resultSet->getResults() as $result) {
-            $placeId = $result->getData()['id'] ;
+            $placeData = $result->getData();
+            $placeId = $placeData['id'] ;
             
             $place = $index->getType('place')->getDocument($placeId);
 
