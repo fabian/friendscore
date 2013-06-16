@@ -18,7 +18,7 @@ class DefaultController
     protected $security;
     protected $router;
     protected $elastica;
-
+    
     /**
      * @InjectParams({
      *     "doctrine" = @Inject("doctrine"),
@@ -200,36 +200,27 @@ class DefaultController
             $visitResultSet = $index->getType('visit')->search($visitQuery);
 
             foreach ($visitResultSet->getResults() as $visitResult) {
+                $friendId = $visitResult->getData()['visitor_id'];
+                
+                var_dump($visitResult->getData());
 
-                //change to id
-                $friendId = $visitResult->getData()['last_name'];
                 
                 //check start of string for fb or fq
-                $checkinsToAdd = null;
+                $checkinsToAdd = strstr($visitResult->getData()['place_id'], '_', true);;
                 
-                if(true) {
-                    if(!isset($friendsCheckins['facebook'])) {
-                        $friendsCheckins['facebook'] = array();
-                    }
-                    
-                    $service = 'facebook';
-                } else {
-                    if(!isset($friendsCheckins['foursquare'])) {
-                        $friendsCheckins['foursquare'] = array();
-                    }  
-
-                    $service = 'foursquare';
+               if(!isset($friendsCheckins[$checkinsToAdd])) {
+                        $friendsCheckins[$checkinsToAdd] = array();
                 }
                 
-                if(isset($friendsCheckins[$service][$friendId])) {
-                    $friendsCheckins[$service][$friendId]++;
+                if(isset($friendsCheckins[$checkinsToAdd][$friendId])) {
+                    $friendsCheckins[$checkinsToAdd][$friendId]++;
                 } else {
-                    $friendsCheckins[$service][$friendId] = 1;
+                    $friendsCheckins[$checkinsToAdd][$friendId] = 1;
                 }
             }
         }
         
-        //how to do a constant?
+        //use constant?
         $basepoint = 1 / (3 * 2) / 2;
         
         $friendscore = 0;
