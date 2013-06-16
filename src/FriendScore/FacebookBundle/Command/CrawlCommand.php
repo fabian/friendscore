@@ -112,7 +112,7 @@ class CrawlCommand extends ContainerAwareCommand
 
                                 $type->addDocument($document);
 
-                                $visitId = $userId . '_facebook_' . $friendId;
+                                $visitId = $userId . '_facebook_' . $placeId . '_' . $friendId;
                                 try {
                                     $visit = $index->getType('visit')->getDocument($visitId)->getData();
                                 } catch (\Elastica\Exception\NotFoundException $e) {

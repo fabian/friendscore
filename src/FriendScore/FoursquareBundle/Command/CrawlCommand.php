@@ -151,7 +151,7 @@ class CrawlCommand extends ContainerAwareCommand
                         $lastCheckin = date('c', $timestamp);
 
                         $visitorId = $visitor->id;
-                        $visitId = $foursquareId . '_foursquare_' . $visitorId;
+                        $visitId = $foursquareId . '_foursquare_' . $venueId . '_' . $visitorId;
                         $photo = $visitor->photo;
                         $size = '100x100';
 
