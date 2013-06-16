@@ -6,7 +6,7 @@ use JMS\DiExtraBundle\Annotation\Service;
 use JMS\DiExtraBundle\Annotation\Inject;
 use JMS\DiExtraBundle\Annotation\InjectParams;
 
-use FriendScore\FoursquareBundle\Entity\User;
+use FriendScore\FacebookBundle\Entity\User;
 
 /**
  * @Service
