@@ -80,7 +80,7 @@ class CrawlCommand extends ContainerAwareCommand
                         $request = $this->client->get($friend->id);
                         $query = $request->getQuery();
                         $query->set('access_token', $accessToken);
-                        $query->set('fields', 'checkins.fields(place, coordinates)');
+                        $query->set('fields', 'checkins.fields(place, coordinates, created_time)');
 
                         $response = $request->send();
                         $body = $response->getBody();
@@ -110,13 +110,15 @@ class CrawlCommand extends ContainerAwareCommand
                                 $document = new \Elastica\Document($placeIdFacebook, $facebook);
 
                                 $type->addDocument($document);
-
+                             
                                 $facebookCheckin = array(
                                     'user_id' => $userId,
                                     'place_id' => $placeIdFacebook,
                                     'checkin' => $checkinId,
+                                    'place_name' => $place->name,
                                     'first_name' => $friend->first_name,
                                     'last_name' => $friend->last_name,
+                                    'last_checkin' => $checkin->created_time,
                                 );
 
                                 $document = new \Elastica\Document($userId . '_facebook_' . $checkinId, $facebookCheckin);
