@@ -100,7 +100,7 @@ class CrawlCommand extends ContainerAwareCommand
                                     'id' => $placeIdFacebook,
                                     'place_id' => $placeId,
                                     'name' => $place->name,
-                                    'url' => 'http://graph.facebook.com/' . $placeId,
+                                    'url' => 'https://www.facebook.com/pages/@/' . $placeId,
                                 );
                                 
                                 if (isset($location) && isset($location->latitude) && isset($location->longitude)) {
