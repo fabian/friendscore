@@ -164,21 +164,23 @@ class DefaultController
         
         $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
         $hasChildQuery = new \Elastica\Query\HasChild($userQuery, 'visit');
-        $stringQuery = new \Elastica\Query\QueryString('*' . $placeName . '*');
+        $mltQuery = new \Elastica\Query\MoreLikeThis();
+        $mltQuery->setFields(array('name'));
+        $mltQuery->setLikeText($placeName);
+        $mltQuery->setMinTermFrequency(0);
+        $mltQuery->setMinDocFrequency(0);
 
         $boolQuery = new \Elastica\Query\Bool();
         $boolQuery->addMust($hasChildQuery);
-        $boolQuery->addMust($stringQuery);
+        $boolQuery->addMust($mltQuery);
 
         $query = new \Elastica\Query();
         $query->setQuery($boolQuery);
-        $query->setSize(5);
         $resultSet = $index->getType('place')->search($query);
 
         $places = array();
         
         $friendsCheckins = array();
-        
         foreach ($resultSet->getResults() as $result) {
             $placeId = $result->getData()['id'] ;
             
@@ -195,28 +197,24 @@ class DefaultController
 
             $visitQuery = new \Elastica\Query();
             $visitQuery->setQuery($boolForVisitQuery);
-            $visitQuery->setSort(array('last_checkin' => 'desc'));
-            $visitQuery->setSize(5);
             $visitResultSet = $index->getType('visit')->search($visitQuery);
 
             foreach ($visitResultSet->getResults() as $visitResult) {
-                $friendId = $visitResult->getData()['visitor_id'];
-                
+
+                $visitData = $visitResult->getData();
+                $friendId = $visitData['visitor_id'];
+
                 //check start of string for fb or fq
-                $checkinsToAdd = strstr($visitResult->getData()['place_id'], '_', true);;
+                $checkinsToAdd = strstr($visitData['place_id'], '_', true);;
                 
                if(!isset($friendsCheckins[$checkinsToAdd])) {
                         $friendsCheckins[$checkinsToAdd] = array();
                 }
                 
-                if(isset($friendsCheckins[$checkinsToAdd][$friendId])) {
-                    $friendsCheckins[$checkinsToAdd][$friendId]++;
-                } else {
-                    $friendsCheckins[$checkinsToAdd][$friendId] = 1;
-                }
+                $friendsCheckins[$checkinsToAdd][$friendId] = count($visitData['checkins']);
             }
         }
-        
+
         //use constant?
         $basepoint = 1 / (3 * 2) / 2;
         
