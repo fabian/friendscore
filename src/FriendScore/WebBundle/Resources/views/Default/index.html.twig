@@ -71,25 +71,22 @@ geoJson.features.push({
 {% endif %}
 {% endfor %}
 
-map.markerLayer.setGeoJSON(geoJson);
+map.markerLayer.on('layeradd', function(e) {
 
+    var marker = e.layer,
+        feature = marker.feature;
 
-map.markerLayer.on('ready', function(e) {
-    this.eachLayer(function(marker) {
+    // Create custom popup content
+    var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
 
-        var feature = marker.feature;
-
-        // Create custom popup content
-        var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
-
-        // http://leafletjs.com/reference.html#popup
-        marker.bindPopup(popupContent,{
-            closeButton: false,
-            minWidth: 60
-        });
-
+    // http://leafletjs.com/reference.html#popup
+    marker.bindPopup(popupContent,{
+        closeButton: false,
+        minWidth: 60
     });
 });
+
+map.markerLayer.setGeoJSON(geoJson);
 
 // This uses the HTML5 geolocation API, which is available on
 // most mobile browsers and modern browsers, but not in Internet Explorer
