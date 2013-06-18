@@ -92,7 +92,8 @@ class CrawlCommand extends ContainerAwareCommand
                             'venue_id' => $venueId,
                             'name' => $venueName,
                             'location'=> array('lat' => $location->lat, 'lon' => $location->lng),
-                            'url' => $venue->canonicalUrl
+                            'url' => $venue->canonicalUrl,
+                            'type' => 'foursquare',
                         );
 
                         $document = new \Elastica\Document($placeId, $foursquare);
@@ -127,6 +128,7 @@ class CrawlCommand extends ContainerAwareCommand
                             'photo' => $photo->prefix . $size . $photo->suffix,
                             'last_checkin' => $lastCheckin,
                             'checkins' => array_unique($checkins),
+                            'type' => 'foursquare',
                         );
 
                         $document = new \Elastica\Document($visitId, $foursquareVisit);

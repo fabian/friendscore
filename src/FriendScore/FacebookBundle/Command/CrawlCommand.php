@@ -102,6 +102,7 @@ class CrawlCommand extends ContainerAwareCommand
                                     'place_id' => $placeId,
                                     'name' => $place->name,
                                     'url' => 'https://www.facebook.com/pages/@/' . $placeId,
+                                    'type' => 'facebook',
                                 );
                                 
                                 if (isset($location) && isset($location->latitude) && isset($location->longitude)) {
@@ -131,6 +132,7 @@ class CrawlCommand extends ContainerAwareCommand
                                     'last_name' => $friend->last_name,
                                     'last_checkin' => $checkin->created_time,
                                     'checkins' => array_unique($checkins),
+                                    'type' => 'facebook',
                                 );
 
                                 $document = new \Elastica\Document($visitId, $facebookCheckin);
