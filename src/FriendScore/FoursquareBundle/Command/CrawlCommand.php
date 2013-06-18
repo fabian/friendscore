@@ -46,52 +46,6 @@ class CrawlCommand extends ContainerAwareCommand
             if ($accessToken) {
 
                 // API call
-                $request = $this->client->get('v2/users/self');
-                $query = $request->getQuery();
-                $query->set('oauth_token', $accessToken);
-                $query->set('v', $this->version);
-                $response = $request->send();
-    
-                //$body = $response->getBody();
-                //var_dump(json_decode($body));
-                //echo $body;
-    
-                // API call
-                $request = $this->client->get('v2/users/241175');
-                $query = $request->getQuery();
-                $query->set('oauth_token', $accessToken);
-                $query->set('v', $this->version);
-                $response = $request->send();
-    
-                //$body = $response->getBody();
-                //var_dump(json_decode($body));
-                //echo $body;
-    
-                // API call
-                $request = $this->client->get('v2/venues/explore');
-                $query = $request->getQuery();
-                $query->set('oauth_token', $accessToken);
-                $query->set('v', $this->version);
-                $query->set('near', 'Baden, Switzerland');
-                $query->set('friendVisits', 'visited');
-                $response = $request->send();
-    
-                $body = $response->getBody();
-                //var_dump(json_decode($body));
-                //echo $body;
-    
-                // API call
-                $request = $this->client->get('v2/venues/4af57ab3f964a52054f921e3');
-                $query = $request->getQuery();
-                $query->set('oauth_token', $accessToken);
-                $query->set('v', $this->version);
-                $response = $request->send();
-                
-                $body = $response->getBody();
-                //var_dump(json_decode($body));
-                //echo $body;
-    
-                // API call
                 $request = $this->client->get('v2/checkins/recent');
                 $query = $request->getQuery();
                 $query->set('oauth_token', $accessToken);
@@ -101,8 +55,6 @@ class CrawlCommand extends ContainerAwareCommand
     
                 $body = $response->getBody();
                 $json = json_decode($body);
-                //var_dump($json);
-                //echo $body;
     
                 $index = $this->elastica->getIndex('friendscore');
                 if (!$index->exists()) {
