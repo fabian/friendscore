@@ -46,7 +46,7 @@ class FriendScore
         $boolQuery->addMust($hasChildQuery);
         $boolQuery->addMust($mltQuery);
 
-        $geoFilter = new \Elastica\Filter\GeoDistance('location', $place->location, '0.5km');
+        $geoFilter = new \Elastica\Filter\GeoDistance('location', $place->location, '0.1km');
 
         $query = new \Elastica\Query();
         $query->setQuery($boolQuery);
