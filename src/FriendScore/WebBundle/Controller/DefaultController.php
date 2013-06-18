@@ -18,6 +18,7 @@ class DefaultController
     protected $security;
     protected $router;
     protected $elastica;
+    protected $friendScore;
     
     /**
      * @InjectParams({
@@ -25,14 +26,16 @@ class DefaultController
      *     "security" = @Inject("security.context"),
      *     "router" = @Inject("router"),
      *     "elastica" = @Inject("friend_score.foursquare_bundle.elastica"),
+     *     "friendScore" = @Inject("friend_score.web_bundle.service.friend_score"),
      * })
      */
-    public function __construct($doctrine, $security, $router, $elastica)
+    public function __construct($doctrine, $security, $router, $elastica, $friendScore)
     {
         $this->doctrine = $doctrine;
         $this->security = $security;
         $this->router = $router;
         $this->elastica = $elastica;
+        $this->friendScore = $friendScore;
     }
 
     /**
@@ -127,122 +130,21 @@ class DefaultController
         $index = $this->elastica->getIndex('friendscore');
 
         $place = $index->getType('place')->getDocument($id);
-
         $visitors = array();
+
         $user = $this->security->getToken()->getUser();
         if ($user) {
 
-            $userId = $user->getId();
-            $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
-            $placeQuery = new \Elastica\Query\Term(array('place_id' => $id));
+            //$place->friendscore = '0.83';
+            $friendsCheckins = $this->friendScore->getFriendsCheckins($user, $place);
 
-            $boolQuery = new \Elastica\Query\Bool();
-            $boolQuery->addMust($userQuery);
-            $boolQuery->addMust($placeQuery);
-
-            $query = new \Elastica\Query();
-            $query->setQuery($boolQuery);
-            $query->setSort(array('last_checkin' => 'desc'));
-            $query->setSize(5);
-            $resultSet = $index->getType('visit')->search($query);
-
-            foreach ($resultSet->getResults() as $result) {
-                $visitors[] = $result->getData();
+            foreach ($friendsCheckins as $checkin) {
+                $visitors[$checkin['first_name']] = $checkin;
             }
+
+            $place->friendscore = $this->friendScore->calcualteFriendScore($friendsCheckins);
         }
-        
-        //$place->friendscore = '0.83';
-        $place->friendscore = $this->calcualteFriendScore($user, $place->name);
-        
+
         return array('place' => $place, 'visitors' => $visitors);
-    }
-    
-    protected function calcualteFriendScore($user, $placeName) {
-        $index = $this->elastica->getIndex('friendscore');
-        
-        $userId = $user->getId();
-        
-        $userQuery = new \Elastica\Query\Term(array('user_id' => $userId));
-        $hasChildQuery = new \Elastica\Query\HasChild($userQuery, 'visit');
-        $mltQuery = new \Elastica\Query\MoreLikeThis();
-        $mltQuery->setFields(array('name'));
-        $mltQuery->setLikeText($placeName);
-        $mltQuery->setMinTermFrequency(0);
-        $mltQuery->setMinDocFrequency(0);
-
-        $boolQuery = new \Elastica\Query\Bool();
-        $boolQuery->addMust($hasChildQuery);
-        $boolQuery->addMust($mltQuery);
-
-        $query = new \Elastica\Query();
-        $query->setQuery($boolQuery);
-        $resultSet = $index->getType('place')->search($query);
-
-        $places = array();
-        
-        $friendsCheckins = array();
-        foreach ($resultSet->getResults() as $result) {
-            $placeData = $result->getData();
-            $placeId = $placeData['id'] ;
-            
-            $place = $index->getType('place')->getDocument($placeId);
-
-            $visitors = array();
- 
-            $userForVisitQuery = new \Elastica\Query\Term(array('user_id' => $userId));
-            $placeForVisitQuery = new \Elastica\Query\Term(array('place_id' => $placeId));
-
-            $boolForVisitQuery = new \Elastica\Query\Bool();
-            $boolForVisitQuery->addMust($userForVisitQuery);
-            $boolForVisitQuery->addMust($placeForVisitQuery);
-
-            $visitQuery = new \Elastica\Query();
-            $visitQuery->setQuery($boolForVisitQuery);
-            $visitResultSet = $index->getType('visit')->search($visitQuery);
-
-            foreach ($visitResultSet->getResults() as $visitResult) {
-
-                $visitData = $visitResult->getData();
-                $friendId = $visitData['visitor_id'];
-
-                //check start of string for fb or fq
-                $checkinsToAdd = strstr($visitData['place_id'], '_', true);;
-                
-               if(!isset($friendsCheckins[$checkinsToAdd])) {
-                        $friendsCheckins[$checkinsToAdd] = array();
-                }
-                
-                $friendsCheckins[$checkinsToAdd][$friendId] = count($visitData['checkins']);
-            }
-        }
-
-        //use constant?
-        $basepoint = 1 / (3 * 2) / 2;
-        
-        $friendscore = 0;
-
-        foreach($friendsCheckins as $service) {
-            $serviceScore = 0;
-
-            foreach($service as $friendCheckin) {
-                if($friendCheckin > 1) {
-                    if($friendCheckin > 3) {
-                        $friendCheckin = 3;
-                    }
-                    $serviceScore += $friendCheckin * $basepoint * 2;
-                } else {
-                    $serviceScore += $basepoint;
-                }
-            }
-   
-            if($serviceScore > 0.5) {
-                $serviceScore = 0.5;
-            }
-            
-            $friendscore += $serviceScore;
-            $serviceScore = 0;
-        }
-        
-        return round($friendscore, 2);
     }
 }
