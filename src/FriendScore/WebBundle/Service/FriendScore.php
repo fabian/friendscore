@@ -98,7 +98,12 @@ class FriendScore
                     $friendsCheckins[$checkinsToAdd] = array();
             }
 
-            $friendsCheckins[$checkinsToAdd][$friendId] = count($checkin['checkins']);
+            $count = count($checkin['checkins']);
+            if ($count == 0 && isset($checkin['checkin_count'])) {
+                $count = $checkin['checkin_count'];
+            }
+
+            $friendsCheckins[$checkinsToAdd][$friendId] = $count;
         }
 
         //use constant?
