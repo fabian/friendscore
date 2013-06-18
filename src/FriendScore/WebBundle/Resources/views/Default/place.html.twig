@@ -4,8 +4,18 @@
 
 <article class="place">
 
-<h2>{{ place.name }}, {{ place.friendscore * 100 }}%</h2>
-<p class="details"><a href="{{ place.url }}"><small>Source</small></a></p>
+<h2 title="{{ place.url }}">{{ place.name }}</h2>
+<p class="details" title="{{ place.friendscore * 100 }}%">
+    <small>
+        {%- for i in [0, 0.2, 0.4, 0.6, 0.9] -%}
+            {%- if i < place.friendscore -%}
+                ★
+            {%- else -%}
+                ☆
+            {%- endif -%}
+        {%- endfor -%}
+    </small>
+</p>
 
 <p class="visitors">
     {% if visitors %}
