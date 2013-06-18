@@ -52,20 +52,19 @@ geoJson.features.push({
 });
 {% endfor %}
 
-map.markerLayer.on('ready', function(e) {
-    this.eachLayer(function(marker) {
 
-        var feature = marker.feature;
+map.markerLayer.on('layeradd', function(e) {
 
-        // Create custom popup content
-        var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
+    var marker = e.layer,
+        feature = marker.feature;
 
-        // http://leafletjs.com/reference.html#popup
-        marker.bindPopup(popupContent,{
-            closeButton: false,
-            minWidth: 60
-        });
+    // Create custom popup content
+    var popupContent =  '<div class="marker-title"><a href="' + feature.properties.url + '">' + feature.properties.title + '</a></div>';
 
+    // http://leafletjs.com/reference.html#popup
+    marker.bindPopup(popupContent,{
+        closeButton: false,
+        minWidth: 60
     });
 });
 
