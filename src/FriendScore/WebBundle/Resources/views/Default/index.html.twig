@@ -21,7 +21,7 @@
         </li>
     {% else %}
         <li>
-            <a>No Check-Ins yet.</a>
+            <a href="{{ url('friendscore_web_user_index') }}"><small>No Check-Ins yet. Connect with <br/>Facebook or Foursquare.</small></a>
         </li>
     {% endfor %}
 </ul>
