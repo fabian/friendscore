@@ -19,10 +19,10 @@
 
 <p class="visitors">
     {% if visitors %}
-        {% for visitor in visitors %}
+        {% for visitor in visitors -%}
             {% if loop.index0 %}, {% endif %}
             <span title="{{ visitor.first_name }} {{ visitor.last_name }}">{{ visitor.first_name }}</span>
-        {% endfor %}
+        {%- endfor %}
         has been here.
     {% else %}
         No Check-Ins by friends yet.
