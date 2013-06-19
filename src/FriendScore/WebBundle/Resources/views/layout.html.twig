@@ -4,6 +4,8 @@
 <meta charset="UTF-8" />
 <title>{% block title %}FriendScore{% endblock %}</title>
 
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
 <link href="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.css" rel="stylesheet" />
 <!--[if lte IE 8]>
 <link href="http://api.tiles.mapbox.com/mapbox.js/v1.0.2/mapbox.ie.css" rel="stylesheet" />
@@ -44,6 +46,11 @@
 <div id="map"></div>
 
 <script>
+
+var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+if (width <= 1024) {
+    window.scrollTo(0, 130);
+}
 
 var map = L.mapbox.map('map', 'equivalence.map-ju0tzt0i');
 map.setView([47.37842966928331, 8.5350089935687], 14);

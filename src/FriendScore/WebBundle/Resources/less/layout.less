@@ -209,3 +209,32 @@ small {
 body.page-search .search input {
     font-size: 20px;
 }
+
+@media only screen and (max-width: 1024px) {
+
+    .container {
+        position: relative;
+        left: 0;
+        width: 100%;
+        margin-top: 200px;
+        padding-bottom: 0;
+    }
+
+    .container .content {
+        min-height: 600px;
+    }
+
+    h1 a {
+        background-size: 50px 50px;
+        background-position: 20px 20px;
+        padding: 25px 30px 30px 90px;
+    }
+
+    #map {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        z-index: 1;
+    }
+}
