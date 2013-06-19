@@ -7,7 +7,7 @@
 <h2 title="{{ place.url }}">{{ place.name }}</h2>
 <p class="details" title="{{ place.friendscore * 100 }}%">
     <small>
-        {%- for i in [0, 0.2, 0.4, 0.6, 0.9] -%}
+        {%- for i in [0, 0.15, 0.3, 0.6, 0.9] -%}
             {%- if i < place.friendscore -%}
                 ★
             {%- else -%}
