@@ -29,7 +29,7 @@ web1:
     php_fpm_log: true
     after_build:
         - "cp app/config/parameters.php.pagoda app/config/parameters.php"
-        - "php composer.phar install --prefer-source -n"
+        - "php composer.phar install --optimize-autoloader --prefer-source -n"
         - "php app/console --env=prod --no-debug assetic:dump -n"
     before_deploy:
         - "php app/console --env=prod --no-debug cache:clear --no-warmup"
