@@ -1,9 +1,9 @@
 web1: 
     name: friendscore
     cron:
-        - "0 0 * * *": "php app/console foursquare:crawl"
-        - "0 1 * * *": "php app/console foursquare:explore"
-        - "0 0 * * *": "php app/console facebook:crawl"
+        - "0 0 * * *": "php app/console --env=prod foursquare:crawl"
+        - "0 1 * * *": "php app/console --env=prod foursquare:explore"
+        - "0 0 * * *": "php app/console --env=prod facebook:crawl"
     shared_writable_dirs:
         - app/cache
         - app/logs
